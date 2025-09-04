@@ -46,6 +46,7 @@ function showPoints(questionNumber) {
  * @param {number} questionNumber - Número da pergunta a ser exibida
  */
 function showQuestion(questionNumber) {
+    removeConfetti();
   document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
   document.getElementById(`question-${questionNumber}`).classList.add('active');
   currentQuestion = questionNumber - 1;
