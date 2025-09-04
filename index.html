@@ -17,29 +17,37 @@
     <!-- Tela inicial -->
     <div class="slide active" id="welcome-screen">
       <div class="welcome-content">
-        <h2>Bem-vindo ao Show do Milhão Bíblico!</h2>
-        <div class="rules">
-          <h3>Regras do Jogo:</h3>
-          <ul>
-            <li>10 perguntas com valores crescentes</li>
-            <li>Use os recursos de ajuda quando necessário</li>
-            <li>Acumule pontos a cada resposta correta</li>
-            <li>Se errar, o jogo termina</li>
-          </ul>
-          <h3>Pontuação:</h3>
-          <div class="points-list">
-            <div>Pergunta 1 - 10 pontos</div>
-            <div>Pergunta 2 - 20 pontos</div>
-            <div>Pergunta 3 - 30 pontos</div>
-            <div>Pergunta 4 - 40 pontos</div>
-            <div>Pergunta 5 - 50 pontos</div>
-            <div>Pergunta 6 - 100 pontos</div>
-            <div>Pergunta 7 - 200 pontos</div>
-            <div>Pergunta 8 - 250 pontos</div>
-            <div>Pergunta 9 - 500 pontos</div>
-            <div>Pergunta 10 - 1000 pontos</div>
-            </div>
-        </div>
+        <!-- ...dentro de .welcome-content... -->
+<h2>Bem-vindo ao Show do Bíblão!</h2>
+<button id="open-rules" class="btn-primary" type="button">Ver Regras</button>
+
+<!-- Modal de Regras -->
+<div id="rules-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" id="close-rules">&times;</span>
+    <h3>Regras do Jogo:</h3>
+    <ul>
+      <li>10 perguntas com valores crescentes</li>
+      <li>Use os recursos de ajuda quando necessário</li>
+      <li>Acumule pontos a cada resposta correta</li>
+      <li>Se errar, o jogo termina</li>
+    </ul>
+    <h3>Pontuação:</h3>
+    <div class="points-list">
+      <div>Pergunta 1 - 10 pontos</div>
+      <div>Pergunta 2 - 20 pontos</div>
+      <div>Pergunta 3 - 30 pontos</div>
+      <div>Pergunta 4 - 40 pontos</div>
+      <div>Pergunta 5 - 50 pontos</div>
+      <div>Pergunta 6 - 100 pontos</div>
+      <div>Pergunta 7 - 200 pontos</div>
+      <div>Pergunta 8 - 250 pontos</div>
+      <div>Pergunta 9 - 500 pontos</div>
+      <div>Pergunta 10 - 1000 pontos</div>
+    </div>
+  </div>
+</div>
+       
         <button id="start-game" class="btn-primary">Iniciar Jogo</button>
       </div>
     </div>
@@ -57,5 +65,12 @@
   </div>
   <script src="scripts/perguntas.js"></script>
   <script src="scripts/game.js"></script>
+  <script src="scripts/state.js"></script>
+<script src="scripts/questions.js"></script>
+<script src="scripts/screens.js"></script>
+<script src="scripts/progress.js"></script>
+<script src="scripts/jokers.js"></script>
+<script src="scripts/visual.js"></script>
+<script src="scripts/main.js"></script>
 </body>
 </html>
