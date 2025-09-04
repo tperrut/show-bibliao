@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Show do Milhão Bíblico</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+        <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo">
+        <h1>SHOW DO MILHÃO BÍBLICO</h1>
+        <div class="score-display">Pontuação: <span id="current-score">0</span> pontos</div>
+        </header>
+    <div class="progress" id="progress"></div>
+    <!-- Tela inicial -->
+    <div class="slide active" id="welcome-screen">
+      <div class="welcome-content">
+        <h2>Bem-vindo ao Show do Milhão Bíblico!</h2>
+        <div class="rules">
+          <h3>Regras do Jogo:</h3>
+          <ul>
+            <li>10 perguntas com valores crescentes</li>
+            <li>Use os recursos de ajuda quando necessário</li>
+            <li>Acumule pontos a cada resposta correta</li>
+            <li>Se errar, o jogo termina</li>
+          </ul>
+          <h3>Pontuação:</h3>
+          <div class="points-list">
+            <div>Pergunta 1 - 10 pontos</div>
+            <div>Pergunta 2 - 20 pontos</div>
+            <div>Pergunta 3 - 30 pontos</div>
+            <div>Pergunta 4 - 40 pontos</div>
+            <div>Pergunta 5 - 50 pontos</div>
+            <div>Pergunta 6 - 100 pontos</div>
+            <div>Pergunta 7 - 200 pontos</div>
+            <div>Pergunta 8 - 250 pontos</div>
+            <div>Pergunta 9 - 500 pontos</div>
+            <div>Pergunta 10 - 1000 pontos</div>
+            </div>
+        </div>
+        <button id="start-game" class="btn-primary">Iniciar Jogo</button>
+      </div>
+    </div>
+    <!-- Slides de perguntas e pontuação são gerados dinamicamente -->
+    <!-- Tela final -->
+    <div class="slide" id="final-screen">
+      <div class="final-content">
+        <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo">
+        <h2>Parabéns!</h2>
+        <div class="final-score" id="final-score">0 pontos</div>
+        <p>Você completou o Show do Milhão Bíblico!</p>
+        <button id="play-again" class="btn-primary">Jogar Novamente</button>
+        </div>
+    </div>
+  </div>
+  <script src="scripts/perguntas.js"></script>
+  <script src="scripts/game.js"></script>
+</body>
+</html>
