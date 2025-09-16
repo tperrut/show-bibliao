@@ -9,23 +9,51 @@ document.addEventListener('DOMContentLoaded', function() {
   initProgressBar();
 });
 
+function openFeedbackModal(html, callback) {
+  document.getElementById('ajuda-modal-text').innerHTML = html;
+  const modal = document.getElementById('ajuda-modal');
+  modal.classList.add('active');
+
+  // Fecha ao clicar no X, fora do modal ou ESC
+  function closeHandler() {
+    modal.classList.remove('active');
+    document.getElementById('close-ajuda-modal').removeEventListener('click', closeHandler);
+    modal.removeEventListener('click', outsideHandler);
+    document.removeEventListener('keydown', escHandler);
+    if (callback) callback();
+  }
+  function outsideHandler(e) { if (e.target === modal) closeHandler(); }
+  function escHandler(e) { if (e.key === "Escape") closeHandler(); }
+
+  document.getElementById('close-ajuda-modal').onclick = closeHandler;
+  modal.onclick = outsideHandler;
+  document.addEventListener('keydown', escHandler);
+}
 /**
  * Mostra a tela final, exibe a pontuação, solta confetes e se merecer ganha aplausos
  */
-function finishGame() {
-    document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
-    document.getElementById('final-screen').classList.add('active');
-    document.getElementById('final-score').textContent = `${currentScore} pontos`;
-    createConfetti();
+function finishGame(victory = true) {
+  document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
+  document.getElementById('final-screen').classList.add('active');
+  document.getElementById('final-score').textContent = `${currentScore} pontos`;
 
+  if (victory) {
+    document.getElementById('final-title').textContent = "Parabéns!";
+    document.getElementById('final-message').textContent = "Você venceu o Show do Milhão Bíblico!";
+    createConfetti();
     // TOCA O SOM DE APLAUSOS SE PONTUAÇÃO MÁXIMA
     if (currentScore === 1000) {
-        const audio = document.getElementById('aplausos-audio');
-        if (audio) {
-            audio.currentTime = 0;
-            audio.play();
-        }
+      const audio = document.getElementById('aplausos-audio');
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play();
+      }
     }
+  } else {
+    document.getElementById('final-title').textContent = "Fim de Jogo!";
+    document.getElementById('final-message').textContent = "Você perdeu!!!";
+    removeConfetti();
+  }
 }
 /**
  * Reseta o estado do jogo para jogar novamente
@@ -65,10 +93,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
-
-function openAjudaModal(text) {
-    document.getElementById('ajuda-modal-text').textContent = text;
-    document.getElementById('ajuda-modal').classList.add('active');
+function openAjudaModal(html) {
+  document.getElementById('ajuda-modal-text').innerHTML = html;
+  document.getElementById('ajuda-modal').classList.add('active');
+  // Ao fechar, reabilite as opções
+  const closeBtn = document.getElementById('close-ajuda-modal');
+  const modal = document.getElementById('ajuda-modal');
+  function closeHandler() {
+    modal.classList.remove('active');
+    // Reabilita opções da pergunta atual
+    document.querySelectorAll(`#question-${currentQuestion + 1} .option`).forEach(option => {
+      if (option.style.opacity !== '0.3') // não reabilita as removidas por cartas
+        option.style.pointerEvents = 'auto';
+    });
+    closeBtn.removeEventListener('click', closeHandler);
+    modal.removeEventListener('click', outsideHandler);
+    document.removeEventListener('keydown', escHandler);
+  }
+  function outsideHandler(e) { if (e.target === modal) closeHandler(); }
+  function escHandler(e) { if (e.key === "Escape") closeHandler(); }
+  closeBtn.onclick = closeHandler;
+  modal.onclick = outsideHandler;
+  document.addEventListener('keydown', escHandler);
 }
 document.addEventListener('DOMContentLoaded', function() {
     const closeBtn = document.getElementById('close-ajuda-modal');

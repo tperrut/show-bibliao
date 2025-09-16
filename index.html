@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Show do Milhão Bíblico</title>
+  <title>Show do Bíblão</title>
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
   <div class="container">
     <header>
         <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo">
-        <h1>SHOW DO MILHÃO BÍBLICO</h1>
+        <h1>SHOW DO BÍBLÃO</h1>
         <div class="score-display">Pontuação: <span id="current-score">0</span> pontos</div>
         </header>
     <div class="progress" id="progress"></div>
@@ -23,31 +23,48 @@
 
 <!-- Modal de Regras -->
 <div id="rules-modal" class="modal">
-  <div class="modal-content">
+  <div class="modal-content rules-modal-content">
     <span class="close-modal" id="close-rules">&times;</span>
-    <h3>Regras do Jogo:</h3>
-    <ul>
-      <li>10 perguntas com valores crescentes</li>
-      <li>Use os recursos de ajuda quando necessário</li>
-      <li>Acumule pontos a cada resposta correta</li>
-      <li>Se errar, o jogo termina</li>
+    <div class="rules-header">
+      <img src="images/logo.png" alt="Logo" class="rules-logo">
+      <h2>Regras do Jogo</h2>
+    </div>
+    <ul class="rules-list">
+      <li>
+        <span class="rules-icon">🎯</span>
+        <span class="rules-text"><b>15 perguntas</b> com valores crescentes</span>
+      </li>
+      <li>
+        <span class="rules-icon">💡</span>
+        <span class="rules-text">Use os <b>recursos de ajuda</b> quando necessário</span>
+      </li>
+      <li>
+        <span class="rules-icon">🛠️</span>
+        <span class="rules-text">
+          Recursos: <b>Ajuda dos Pastores</b>, <b>Da Classe</b>, <b>Cartas</b> e <b>Pulo</b>
+        </span>
+      </li>
     </ul>
-    <h3>Pontuação:</h3>
-    <div class="points-list">
-      <div>Pergunta 1 - 10 pontos</div>
-      <div>Pergunta 2 - 20 pontos</div>
-      <div>Pergunta 3 - 30 pontos</div>
-      <div>Pergunta 4 - 40 pontos</div>
-      <div>Pergunta 5 - 50 pontos</div>
-      <div>Pergunta 6 - 100 pontos</div>
-      <div>Pergunta 7 - 200 pontos</div>
-      <div>Pergunta 8 - 250 pontos</div>
-      <div>Pergunta 9 - 500 pontos</div>
-      <div>Pergunta 10 - 1000 pontos</div>
+    <h3 class="points-title">Pontuação</h3>
+    <div class="points-list rules-points-list">
+      <div><span class="point-number">1</span> <span class="point-desc">10 pontos</span></div>
+      <div><span class="point-number">2</span> <span class="point-desc">20 pontos</span></div>
+      <div><span class="point-number">3</span> <span class="point-desc">30 pontos</span></div>
+      <div><span class="point-number">4</span> <span class="point-desc">40 pontos</span></div>
+      <div><span class="point-number">5</span> <span class="point-desc">50 pontos</span></div>
+      <div><span class="point-number">6</span> <span class="point-desc">100 pontos</span></div>
+      <div><span class="point-number">7</span> <span class="point-desc">200 pontos</span></div>
+      <div><span class="point-number">8</span> <span class="point-desc">250 pontos</span></div>
+      <div><span class="point-number">9</span> <span class="point-desc">300 pontos</span></div>
+      <div><span class="point-number">10</span> <span class="point-desc">500 pontos</span></div>
+      <div><span class="point-number">11</span> <span class="point-desc">600 pontos</span></div>
+      <div><span class="point-number">12</span> <span class="point-desc">700 pontos</span></div>
+      <div><span class="point-number">13</span> <span class="point-desc">800 pontos</span></div>
+      <div><span class="point-number">14</span> <span class="point-desc">900 pontos</span></div>
+      <div><span class="point-number">15</span> <span class="point-desc">1000 pontos</span></div>
     </div>
   </div>
-</div>
-       
+</div>       
         <button id="start-game" class="btn-primary">Iniciar Jogo</button>
       </div>
     </div>
@@ -63,11 +80,11 @@
     <div class="slide" id="final-screen">
       <div class="final-content">
         <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo">
-        <h2>Parabéns!</h2>
+        <h2 id="final-title">Parabéns!</h2>
         <div class="final-score" id="final-score">0 pontos</div>
-        <p>Você completou o Show do Milhão Bíblico!</p>
+        <p id="final-message">Você completou o Show do Biblão!</p>
         <button id="play-again" class="btn-primary">Jogar Novamente</button>
-        </div>
+      </div>
     </div>
   </div>
   <script src="scripts/perguntas.js"></script>
@@ -80,5 +97,14 @@
 <script src="scripts/visual.js"></script>
 <script src="scripts/main.js"></script>
 <audio id="aplausos-audio" src="sons/aplausos.mp3" preload="auto"></audio>
+<audio id="fiasco-audio" src="sons/fiasco.mp3" preload="auto"></audio>
+<audio id="cartas-audio" src="sons/cartas.mp3" preload="auto"></audio>
+<audio id="cartas-audio" src="sons/cartas.mp3" preload="auto"></audio>
+<audio id="ajuda-audio" src="sons/ajuda.mp3" preload="auto"></audio>
+<audio id="correto-audio" src="sons/correto.mp3" preload="auto"></audio>
+<audio id="errado-audio" src="sons/errado.mp3" preload="auto"></audio>
+<audio id="tambor-audio" src="sons/tambor.mp3" preload="auto"></audio>
+<audio id="pulo-audio" src="sons/pulo.mp3" preload="auto"></audio>
+
 </body>
 </html>

@@ -31,10 +31,19 @@ function startGame() {
  * @param {number} questionNumber - Número da pergunta a ser exibida
  */
 function showPoints(questionNumber) {
-  if (questionNumber > questions.length) {
+  if (questionNumber > questions.length) {  
     finishGame();
     return;
   }
+  // TOCA O SOM DE TAMBOR ANTES DA ÚLTIMA PERGUNTA
+    if (questionNumber === questions.length) {
+        const tamborAudio = document.getElementById('tambor-audio');
+        if (tamborAudio) {
+            tamborAudio.currentTime = 0;
+            tamborAudio.play();
+        }
+    }
+
   document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
   document.getElementById(`points-${questionNumber}`).classList.add('active');
   currentQuestion = questionNumber - 1;
@@ -47,15 +56,22 @@ function showPoints(questionNumber) {
  */
 function showQuestion(questionNumber) {
     removeConfetti();
-  document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
-  document.getElementById(`question-${questionNumber}`).classList.add('active');
-  currentQuestion = questionNumber - 1;
-  initProgressBar();
-  document.querySelectorAll('.option').forEach(option => {
-    option.style.pointerEvents = 'auto';
-    option.classList.remove('correct', 'incorrect');
-    option.style.opacity = '1';
-  });
+    questionAnswered = false;
+    respostaBloqueada = false;
+      document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
+      document.getElementById(`question-${questionNumber}`).classList.add('active');
+      currentQuestion = questionNumber - 1;
+      initProgressBar();
+      document.querySelectorAll('.option').forEach(option => {
+        option.style.pointerEvents = 'auto';
+        option.classList.remove('correct', 'incorrect');
+        option.style.opacity = '1';
+      });
   setupAjudas(questionNumber);
   questionAnswered = false; // Reset ao mostrar nova pergunta
+  document.querySelectorAll(`#question-${questionNumber} .option`).forEach(option => {
+  option.style.pointerEvents = 'auto';
+  option.classList.remove('correct', 'incorrect');
+  option.style.opacity = '1';
+});
 }

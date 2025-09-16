@@ -39,15 +39,17 @@ function createGameScreens() {
       <div class="question-text">${q.question}</div>
       <div class="options">${optionsHTML}</div>
       <div class="ajudas">
-        <a href="javascript:void(0)" class="ajuda-img" id="ajuda-pastores-${index+1}" title="Pastores">
-          <img src="images/pastores.png" alt="Pastores">
+        <a href="javascript:void(0)" class="ajuda-img" id="ajuda-pastores-${index+1}" title="Ajuda dos Pastores">
+          <img src="images/pastores.png" alt="Ajuda dos Pastores">
         </a>
-        <a href="javascript:void(0)" class="ajuda-img" id="ajuda-cinquenta-${index+1}" title="50% de chance">
-          <img src="images/cinquenta.png" alt="50%">
+        <a href="javascript:void(0)" class="ajuda-img" id="ajuda-classe-${index+1}" title="Ajuda da Classe">
+          <img src="images/classe.jpg" alt="Ajuda da Clcasse">
         </a>
-        <a href="javascript:void(0)" class="ajuda-img" id="ajuda-pulos-${index+1}" title="Pular">
-          <img src="images/pular.png" alt="Pular">
-          <span class="pulos-restantes">(2)</span>
+        <a href="javascript:void(0)" class="ajuda-img" id="ajuda-cartas-${index+1}" title="Cartas Misteriosas">
+          <img src="images/carta.jpg" alt="Cartas Misteriosas">
+        </a>
+        <a href="javascript:void(0)" class="ajuda-img" id="ajuda-pulos-${index+1}" title="Pular Pergunta">
+          <img src="images/pular.png" alt="Pular Pergunta">
         </a>
       </div>
     `;
