@@ -48,6 +48,11 @@ function finishGame(victory = true) {
         audio.currentTime = 0;
         audio.play();
       }
+      const eeeeee_criancas = document.getElementById('eeeeee-criancas-audio');
+            if (eeeeee_criancas) {
+                eeeeee_criancas.currentTime = 0;
+                eeeeee_criancas.play();
+            }
     }
   } else {
     document.getElementById('final-title').textContent = "Fim de Jogo!";

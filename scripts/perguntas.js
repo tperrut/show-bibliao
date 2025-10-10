@@ -1,152 +1,157 @@
 const questions = [
   {
     points: 10,
-    question: "Quem era o irmão de Moisés que se tornou o primeiro sumo sacerdote de Israel?",
+    question: "Quem foi vendido por seus irmãos e se tornou governador do Egito?",
     options: [
-      { text: "Arão", correct: true },
-      { text: "Josué", correct: false },
-      { text: "Calebe", correct: false },
-      { text: "Eli", correct: false }
+      { text: "Judá", correct: false },
+      { text: "José", correct: true },
+      { text: "Benjamin", correct: false },
+      { text: "Jacó", correct: false }
     ]
   },
   {
     points: 20,
-    question: "Qual era o nome da esposa de Abraão?",
+    question: "Qual o nome do profeta que desfiou os profetas de Baal no Monte Carmelo?",
     options: [
-      { text: "Sara", correct: true },
-      { text: "Rebeca", correct: false },
-      { text: "Raquel", correct: false },
-      { text: "Miriã", correct: false }
+      { text: "Micaías", correct: false },
+      { text: "Eliseu", correct: false },
+      { text: "Elias", correct: true },
+      { text: "Oséais", correct: false }
     ]
   },
   {
     points: 30,
-    question: "Quem foi vendido por seus irmãos e se tornou governador do Egito?",
+    question: "Qual o nome do profeta e primo de Jesus que pregava o arrependimento?",
     options: [
-      { text: "José", correct: true },
-      { text: "Moisés", correct: false },
-      { text: "Davi", correct: false },
-      { text: "Esaú", correct: false }
+      { text: "João Batista", correct: true },
+      { text: "Jeremias", correct: false },
+      { text: "Ágabo", correct: false },
+      { text: "Teudas", correct: false }
     ]
   },
   {
     points: 40,
-    question: "Qual profeta desafiou os profetas de Baal no Monte Carmelo?",
+    question: "Quem pregou após a descida do Espírito Santo?",
     options: [
-      { text: "Elias", correct: true },
-      { text: "Eliseu", correct: false },
-      { text: "Isaías", correct: false },
-      { text: "Jeremias", correct: false }
+      { text: "João Batista", correct: false },
+      { text: "Thiago", correct: false },
+      { text: "Felipe", correct: false },
+      { text: "Pedro", correct: true }
     ]
   },
   {
     points: 50,
-    question: "Quem foi o primeiro rei de Israel?",
+    question: "Qual era o nome do alimento que descia do céu para o povo de Israel no deserto?",
     options: [
-      { text: "Saul", correct: true },
-      { text: "Davi", correct: false },
-      { text: "Salomão", correct: false },
-      { text: "Ezequias", correct: false }
+      { text: "Páscoa", correct: false },
+      { text: "Broa", correct: false },
+      { text: "Alfarroba", correct: false },
+      { text: "Maná", correct: true }
     ]
   },
   {
     points: 100,
-    question: "Qual discípulo negou Jesus três vezes antes do galo cantar?",
+    question: 'Segundo o apóstolo Paulo em Romanos 8, "todos os que são guiados pelo Espírito de Deus são..."',
     options: [
-      { text: "Pedro", correct: true },
-      { text: "João", correct: false },
-      { text: "Tiago", correct: false },
-      { text: "André", correct: false }
+      { text: "abençoados", correct: false },
+      { text: "cheios do Espírito", correct: false },
+      { text: "selados", correct: false },
+      { text: "filhos de Deus", correct: true }
     ]
   },
   {
     points: 200,
-    question: "Quem escreveu a maioria das cartas do Novo Testamento?",
+    question: "Em qual cidade os discípulos foram chamados pela primeira vez de cristãos?",
     options: [
-      { text: "Paulo", correct: true },
-      { text: "Pedro", correct: false },
-      { text: "João", correct: false },
-      { text: "Tiago", correct: false }
-    ]
-  },
-  {
-    points: 250,
-    question: "Qual mulher do Antigo Testamento se tornou rainha da Pérsia?",
-    options: [
-      { text: "Ester", correct: true },
-      { text: "Débora", correct: false },
-      { text: "Rute", correct: false },
-      { text: "Marta", correct: false }
+      { text: "Antioquia", correct: true },
+      { text: "Jerusalém", correct: false },
+      { text: "Samaria", correct: false },
+      { text: "Éfeso", correct: false }
     ]
   },
   {
     points: 300,
-    question: "Quem foi engolido por um grande peixe ao fugir da ordem de Deus?",
+    question: "Qual é o nome da mulher de Moisés?",
     options: [
-      { text: "Jonas", correct: true },
-      { text: "Noé", correct: false },
-      { text: "Daniel", correct: false },
-      { text: "Elias", correct: false }
+      { text: "Zípora", correct: true },
+      { text: "Joquebede", correct: false },
+      { text: "Quetura", correct: false },
+      { text: "Hagar", correct: false }
+    ]
+  },
+  {
+    points: 400,
+    question: "Quem foram os três apóstolos considerados por Paulo como colunas da Igreja?",
+    options: [
+      { text: "Pedro, Paulo e Thiago", correct: false },
+      { text: "João, Felipe e Thiago", correct: false },
+      { text: "Pedro, Thiago e João", correct: true },
+      { text: "Thiago, João e Mateus", correct: false }
     ]
   },
   {
     points: 500,
-    question: "Qual era o nome do pai de João Batista?",
+    question:
+      "Porque a partir do cap 9 de Atos, Saulo passa a ser chamado de Paulo?",
     options: [
-      { text: "Zacarias", correct: true },
-      { text: "José", correct: false },
-      { text: "Simão", correct: false },
-      { text: "Natanael", correct: false }
+      { text: "Por causa da sua conversão", correct: false },
+      { text: "Porque ele sofria perseguição", correct: false },
+      { text: "Para valer-se da cidadania romana", correct: true },
+      { text: "Nenhuma resposta certa", correct: false }
     ]
   },
   {
     points: 600,
-    question: "Quem foi o juiz que derrotou os midianitas com apenas 300 homens?",
+    question: "Quem edificou a cidade de Nínive?",
     options: [
-      { text: "Gideão", correct: true },
-      { text: "Sansão", correct: false },
-      { text: "Eli", correct: false },
-      { text: "Samuel", correct: false }
+      { text: "Jonas", correct: false },
+      { text: "Ninrode", correct: false },
+      { text: "Jarede", correct: false },
+      { text: "Tubalcaim", correct: true }
     ]
   },
   {
     points: 700,
-    question: "Qual discípulo era cobrador de impostos antes de seguir Jesus?",
+    question:
+      'O que receberão aqueles que amam a vinda do Senhor segundo Paulo disse a Timóteo?',
     options: [
-      { text: "Mateus", correct: true },
-      { text: "Lucas", correct: false },
-      { text: "Bartolomeu", correct: false },
-      { text: "Tomé", correct: false }
+      { text: "o seu galardão", correct: false },
+      { text: "a coroa da justiça", correct: true },
+      { text: "o ornamento de glória", correct: false },
+      { text: "um novo nome", correct: false }
     ]
   },
   {
     points: 800,
-    question: "Quem foi ressuscitado por Jesus após quatro dias morto?",
+    question:
+      "Qual era o nome babilônico de Daniel",
     options: [
-      { text: "Lázaro", correct: true },
-      { text: "Jairo", correct: false },
-      { text: "Bartimeu", correct: false },
-      { text: "Nicodemos", correct: false }
+      { text:"Beltazar",correct:false},
+      { text:"Benadade",correct:false},
+      { text:"Baltassazar",correct:false},
+      { text:"Beltessazar",correct:true}
     ]
   },
   {
     points: 900,
-    question: "Qual apóstolo foi conhecido como 'o discípulo amado'?",
-    options: [
-      { text: "João", correct: true },
-      { text: "Pedro", correct: false },
-      { text: "Tiago", correct: false },
-      { text: "Filipe", correct: false }
+    question:
+      "De que maneira Sangar libertou o povo de Israel?",
+    options:[
+      {text:"Mandou descer fogo do céu",correct:false},
+      {text:"Matou 600 homens com a mandíbula de um jumento",correct:false},
+      {text:"Matou 600 homens com uma aguilhada de bois",correct:true},
+      {text:"Matou 450 homens com uma lança",correct:false}
     ]
   },
   {
     points: 1000,
-    question: "Quem escreveu o livro de Apocalipse?",
-    options: [
-      { text: "João", correct: true },
-      { text: "Paulo", correct: false },
-      { text: "Pedro", correct: false },
-      { text: "Tiago", correct: false }
+    question:
+      "Antes de reinar sobre todo Israel, Davi reinou por sete anos e meio sobre qual tribo?",
+    options:[
+      {text:"Judá",correct:true},
+      {text:"Benjamim",correct:false},
+      {text:"Efraim",correct:false},
+      {text:"Manassés",correct:false}
     ]
   }
 ];

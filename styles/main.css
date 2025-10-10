@@ -1,3 +1,11 @@
+/* Efeito de ajuda usada: borda vermelha e esmaecido */
+.ajuda-usada img, .ajuda-img.ajuda-usada img {
+  filter: grayscale(1) brightness(0.7);
+  border: 6px solid red !important;
+  opacity: 0.6;
+  box-shadow: 0 0 12px 5px #ff0000ff;
+  transition: filter 0.3s, opacity 0.3s, border 0.3s;
+}
 html, body {
   height: 100%;
   margin: 0;

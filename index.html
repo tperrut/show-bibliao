@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Show do Bíblão</title>
+  <title>Show do Biblião</title>
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
   <div class="container">
     <header>
         <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo">
-        <h1>SHOW DO BÍBLÃO</h1>
+        <h1>SHOW DO Biblião</h1>
         <div class="score-display">Pontuação: <span id="current-score">0</span> pontos</div>
         </header>
     <div class="progress" id="progress"></div>
@@ -18,7 +18,7 @@
     <div class="slide active" id="welcome-screen">
       <div class="welcome-content">
         <!-- ...dentro de .welcome-content... -->
-<h2>Bem-vindo ao Show do Bíblão!</h2>
+<h2>Bem-vindo ao Show do Biblião!</h2>
 <button id="open-rules" class="btn-primary" type="button">Ver Regras</button>
 
 <!-- Modal de Regras -->
@@ -54,8 +54,8 @@
       <div><span class="point-number">5</span> <span class="point-desc">50 pontos</span></div>
       <div><span class="point-number">6</span> <span class="point-desc">100 pontos</span></div>
       <div><span class="point-number">7</span> <span class="point-desc">200 pontos</span></div>
-      <div><span class="point-number">8</span> <span class="point-desc">250 pontos</span></div>
-      <div><span class="point-number">9</span> <span class="point-desc">300 pontos</span></div>
+      <div><span class="point-number">8</span> <span class="point-desc">300 pontos</span></div>
+      <div><span class="point-number">9</span> <span class="point-desc">400 pontos</span></div>
       <div><span class="point-number">10</span> <span class="point-desc">500 pontos</span></div>
       <div><span class="point-number">11</span> <span class="point-desc">600 pontos</span></div>
       <div><span class="point-number">12</span> <span class="point-desc">700 pontos</span></div>
@@ -79,7 +79,7 @@
     <!-- Tela final -->
     <div class="slide" id="final-screen">
       <div class="final-content">
-        <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo">
+        <!-- <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo"> -->
         <h2 id="final-title">Parabéns!</h2>
         <div class="final-score" id="final-score">0 pontos</div>
         <p id="final-message">Você completou o Show do Biblão!</p>
@@ -97,14 +97,14 @@
 <script src="scripts/visual.js"></script>
 <script src="scripts/main.js"></script>
 <audio id="aplausos-audio" src="sons/aplausos.mp3" preload="auto"></audio>
+<audio id="eeeeee-criancas-audio" src="sons/eeeeee-criancas.mp3" preload="auto"></audio>
 <audio id="fiasco-audio" src="sons/fiasco.mp3" preload="auto"></audio>
-<audio id="cartas-audio" src="sons/cartas.mp3" preload="auto"></audio>
 <audio id="cartas-audio" src="sons/cartas.mp3" preload="auto"></audio>
 <audio id="ajuda-audio" src="sons/ajuda.mp3" preload="auto"></audio>
 <audio id="correto-audio" src="sons/correto.mp3" preload="auto"></audio>
 <audio id="errado-audio" src="sons/errado.mp3" preload="auto"></audio>
 <audio id="tambor-audio" src="sons/tambor.mp3" preload="auto"></audio>
 <audio id="pulo-audio" src="sons/pulo.mp3" preload="auto"></audio>
-
+<audio id="certa-resposta-audio" src="sons/certa-resposta.mp3" preload="auto"></audio>
 </body>
 </html>

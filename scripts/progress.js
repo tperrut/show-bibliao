@@ -37,12 +37,15 @@ function showPoints(questionNumber) {
   }
   // TOCA O SOM DE TAMBOR ANTES DA ÚLTIMA PERGUNTA
     if (questionNumber === questions.length) {
+      
         const tamborAudio = document.getElementById('tambor-audio');
         if (tamborAudio) {
             tamborAudio.currentTime = 0;
             tamborAudio.play();
         }
     }
+
+       
 
   document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
   document.getElementById(`points-${questionNumber}`).classList.add('active');
@@ -55,6 +58,7 @@ function showPoints(questionNumber) {
  * @param {number} questionNumber - Número da pergunta a ser exibida
  */
 function showQuestion(questionNumber) {
+    reabilitarAjudas(questionNumber);
     removeConfetti();
     questionAnswered = false;
     respostaBloqueada = false;
