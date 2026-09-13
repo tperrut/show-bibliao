@@ -1,157 +1,158 @@
 const questions = [
   {
     points: 10,
-    question: "Quem foi vendido por seus irmãos e se tornou governador do Egito?",
+    question: "Quem abriu o Mar Vermelho com seu cajado?",
     options: [
-      { text: "Judá", correct: false },
-      { text: "José", correct: true },
-      { text: "Benjamin", correct: false },
-      { text: "Jacó", correct: false }
+      { text: "Josué", correct: false },
+      { text: "Moisés", correct: true },
+      { text: "Arão", correct: false },
+      { text: "Calebe", correct: false }
     ]
   },
   {
     points: 20,
-    question: "Qual o nome do profeta que desfiou os profetas de Baal no Monte Carmelo?",
+    question: "Como a Terra é descrita em Gênesis 1.2?",
     options: [
-      { text: "Micaías", correct: false },
-      { text: "Eliseu", correct: false },
-      { text: "Elias", correct: true },
-      { text: "Oséais", correct: false }
+      { text: "Sem luz e água", correct: false },
+      { text: "Perfeita", correct: false },
+      { text: "Sem forma e vazia", correct: true },
+      { text: "Redonda", correct: false }
     ]
   },
   {
     points: 30,
-    question: "Qual o nome do profeta e primo de Jesus que pregava o arrependimento?",
+    question: "Quem traiu a Jesus por 30 moedas de prata?",
     options: [
-      { text: "João Batista", correct: true },
-      { text: "Jeremias", correct: false },
-      { text: "Ágabo", correct: false },
-      { text: "Teudas", correct: false }
+      { text: "Judas", correct: true },
+      { text: "Pedro", correct: false },
+      { text: "Timóteo", correct: false },
+      { text: "João", correct: false }
     ]
   },
   {
     points: 40,
-    question: "Quem pregou após a descida do Espírito Santo?",
+    question: "Que dois elementos da Santa Ceia representam o sangue e o corpo de Cristo?",
     options: [
-      { text: "João Batista", correct: false },
-      { text: "Thiago", correct: false },
-      { text: "Felipe", correct: false },
-      { text: "Pedro", correct: true }
+      { text: "Água e pão", correct: false },
+      { text: "Vinho e azeite", correct: false },
+      { text: "Pão e azeite", correct: false },
+      { text: "Vinho e pão", correct: true }
     ]
   },
   {
     points: 50,
-    question: "Qual era o nome do alimento que descia do céu para o povo de Israel no deserto?",
+    question: 'Complete o versículo: "Disse-lhes Jesus: Eu sou a ressurreição e a vida. Quem crê em mim, ainda que morra..."',
     options: [
-      { text: "Páscoa", correct: false },
-      { text: "Broa", correct: false },
-      { text: "Alfarroba", correct: false },
-      { text: "Maná", correct: true }
+      { text: "Viverá", correct: true },
+      { text: "Será salvo", correct: false },
+      { text: "Será enterrado", correct: false },
+      { text: "Resplandecerá", correct: false }
     ]
   },
   {
     points: 100,
-    question: 'Segundo o apóstolo Paulo em Romanos 8, "todos os que são guiados pelo Espírito de Deus são..."',
+    question: "Quais os livros são chamados de Profetas Maiores?",
     options: [
-      { text: "abençoados", correct: false },
-      { text: "cheios do Espírito", correct: false },
-      { text: "selados", correct: false },
-      { text: "filhos de Deus", correct: true }
+      { text: "Isaías, Jeremias, Ezequiel e Daniel", correct: true },
+      { text: "Isaías, Malaquias, Daniel e Oséias", correct: false },
+      { text: "Ezequiel, Daniel, Lamentações e Jeremias", correct: false },
+      { text: "Isaías, Jeremias, Lamentações e Ezequiel", correct: false }
     ]
   },
   {
     points: 200,
-    question: "Em qual cidade os discípulos foram chamados pela primeira vez de cristãos?",
+    question: "Quais os três ofícios de Samuel?",
     options: [
-      { text: "Antioquia", correct: true },
-      { text: "Jerusalém", correct: false },
-      { text: "Samaria", correct: false },
-      { text: "Éfeso", correct: false }
+      { text: "Profeta, escriba e rei", correct: false },
+      { text: "Juiz, profeta e sacerdote", correct: true },
+      { text: "Juiz, profeta e rei", correct: false },
+      { text: "Profeta, sacerdote e escriba", correct: false }
     ]
   },
   {
     points: 300,
-    question: "Qual é o nome da mulher de Moisés?",
+    question: "Quem introduziu o nome de Jó na reunião celestial?",
     options: [
-      { text: "Zípora", correct: true },
-      { text: "Joquebede", correct: false },
-      { text: "Quetura", correct: false },
-      { text: "Hagar", correct: false }
+      { text: "Satanás", correct: true },
+      { text: "Um anjo", correct: false },
+      { text: "Deus", correct: false },
+      { text: "Um querubim", correct: false }
     ]
   },
   {
     points: 400,
-    question: "Quem foram os três apóstolos considerados por Paulo como colunas da Igreja?",
+    question:
+      "Qual o nome dos homens que seguravam os braços de Moisés levantados, enquanto Israel guerreava contra os amalequitas?",
     options: [
-      { text: "Pedro, Paulo e Thiago", correct: false },
-      { text: "João, Felipe e Thiago", correct: false },
-      { text: "Pedro, Thiago e João", correct: true },
-      { text: "Thiago, João e Mateus", correct: false }
+      { text: "Josué e Calebe", correct: false },
+      { text: "Arão e Josué", correct: false },
+      { text: "Josué e Hur", correct: false },
+      { text: "Arão e Hur", correct: true }
     ]
   },
   {
     points: 500,
-    question:
-      "Porque a partir do cap 9 de Atos, Saulo passa a ser chamado de Paulo?",
+    question: "Qual é o significado do nome de Jacó?",
     options: [
-      { text: "Por causa da sua conversão", correct: false },
-      { text: "Porque ele sofria perseguição", correct: false },
-      { text: "Para valer-se da cidadania romana", correct: true },
-      { text: "Nenhuma resposta certa", correct: false }
+      { text: "Aquele que segura pelo calcanhar", correct: true },
+      { text: "Aquele que deseja a bênção", correct: false },
+      { text: "Enganador", correct: false },
+      { text: "Traidor", correct: false }
     ]
   },
   {
     points: 600,
-    question: "Quem edificou a cidade de Nínive?",
+    question:
+      "Quais os nomes dos quatro braços do rio que regava o jardim do Éden?",
     options: [
-      { text: "Jonas", correct: false },
-      { text: "Ninrode", correct: false },
-      { text: "Jarede", correct: false },
-      { text: "Tubalcaim", correct: true }
+      { text: "Nilo, Farfar, Tigre e Eufrates", correct: false },
+      { text: "Abana, Farfar, Nilo e Eufrates", correct: false },
+      { text: "Pisom, Giom, Tigre e Eufrates", correct: true },
+      { text: "Pisom, Nilo, Abana e Farfar", correct: false }
     ]
   },
   {
     points: 700,
     question:
-      'O que receberão aqueles que amam a vinda do Senhor segundo Paulo disse a Timóteo?',
+      "De que enfermidade padecia o pai de Públio, quando foi curado pelo apóstolo Paulo?",
     options: [
-      { text: "o seu galardão", correct: false },
-      { text: "a coroa da justiça", correct: true },
-      { text: "o ornamento de glória", correct: false },
-      { text: "um novo nome", correct: false }
+      { text: "Disenteria", correct: true },
+      { text: "Cegueira", correct: false },
+      { text: "Lepra", correct: false },
+      { text: "Câncer", correct: false }
     ]
   },
   {
     points: 800,
     question:
-      "Qual era o nome babilônico de Daniel",
+      "Em qual escola da cidade de Éfeso o apóstolo Paulo ensinava a seus discípulos?",
     options: [
-      { text:"Beltazar",correct:false},
-      { text:"Benadade",correct:false},
-      { text:"Baltassazar",correct:false},
-      { text:"Beltessazar",correct:true}
+      { text: "Escola de Demétrio", correct: false },
+      { text: "Escola de Tirano", correct: true },
+      { text: "Escola de Gamaliel", correct: false },
+      { text: "Escola de Apolo", correct: false }
     ]
   },
   {
     points: 900,
     question:
-      "De que maneira Sangar libertou o povo de Israel?",
-    options:[
-      {text:"Mandou descer fogo do céu",correct:false},
-      {text:"Matou 600 homens com a mandíbula de um jumento",correct:false},
-      {text:"Matou 600 homens com uma aguilhada de bois",correct:true},
-      {text:"Matou 450 homens com uma lança",correct:false}
+      "Quem foi a mulher moabita a se tornar bisavó de Davi?",
+    options: [
+      { text: "Abigail", correct: false },
+      { text: "Rute", correct: true },
+      { text: "Zípora", correct: false },
+      { text: "Hagar", correct: false }
     ]
   },
   {
     points: 1000,
     question:
-      "Antes de reinar sobre todo Israel, Davi reinou por sete anos e meio sobre qual tribo?",
+      "Quais palavras foram escritas na parede do palácio da Babilônia e interpretadas por Daniel?",
     options:[
-      {text:"Judá",correct:true},
-      {text:"Benjamim",correct:false},
-      {text:"Efraim",correct:false},
-      {text:"Manassés",correct:false}
+      {text:"Mene, Mene, Tequel e Parsim",correct:true},
+      {text:"Bara, bara, Bereshit e Eloim",correct:false},
+      {text:"Abarim, Abarim, Tequel e Abarim",correct:false},
+      {text:"Eloi, Eloi, Tequel e Shabaktani",correct:false}
     ]
   }
 ];
