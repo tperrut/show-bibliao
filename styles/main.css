@@ -190,18 +190,18 @@ h1 {
 }
 
 .question-text {
-  font-size: 1.2rem;
-  margin-bottom: 18px;
+  font-size: 1.5rem;
+  margin-bottom: 24px;
   text-align: center;
 }
 
 .options {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: 16px;
+  margin-bottom: 24px;
   width: 100%;
-  max-width: 500px;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -211,11 +211,11 @@ h1 {
   align-items: center;
   background: #e3e3e3;
   border-radius: 8px;
-  padding: 12px 18px;
+  padding: 16px 24px;
   cursor: pointer;
   border: 2px solid transparent;
   transition: background 0.2s, border 0.2s;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: #1a237e;
 }
 
@@ -223,14 +223,14 @@ h1 {
   background: #e53935;
   color: #fff;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  margin-right: 16px;
-  font-size: 1.1rem;
+  margin-right: 20px;
+  font-size: 1.2rem;
 }
 
 .option.correct {
@@ -248,7 +248,7 @@ h1 {
 .jokers, .ajudas {
   display: flex;
   justify-content: center;
-  gap: 24px;
+  gap: 40px;
   margin-bottom: 18px;
   flex-wrap: wrap;
 }
@@ -267,8 +267,8 @@ h1 {
 }
 
 .joker img, .ajuda-img img {
-  width: 48px;
-  height: 48px;
+  width: 72px;
+  height: 72px;
   border-radius: 8px;
   background: #fff;
   margin-bottom: 4px;
@@ -579,3 +579,27 @@ h1 {
     grid-auto-flow: row;
   }
 }
+
+/* Modo Jogo Ativo */
+body.game-active header {
+  padding: 8px;
+  margin-bottom: 8px;
+  background: transparent;
+}
+
+body.game-active header .logo,
+body.game-active header h1 {
+  display: none;
+}
+
+body.game-active header .score-display {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 8px 24px;
+}
+
+body.game-active .progress {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}

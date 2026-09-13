@@ -68,6 +68,12 @@ function resetGame() {
   currentQuestion = 0;
   jokersUsed = { cinquenta: false, pastores: false, pulos: 0 };
   document.getElementById('current-score').textContent = '0';
+  document.body.classList.remove('game-active');
+  
+  if (document.fullscreenElement && document.exitFullscreen) {
+    document.exitFullscreen().catch(err => console.log(`Erro ao sair da tela cheia: ${err.message}`));
+  }
+
   document.getElementById('welcome-screen').classList.add('active');
   document.getElementById('final-screen').classList.remove('active');
   document.querySelectorAll('.ajuda-img').forEach(btn => btn.classList.remove('ajuda-usada'));

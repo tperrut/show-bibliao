@@ -23,6 +23,14 @@ function initProgressBar() {
  */
 function startGame() {
   document.getElementById('welcome-screen').classList.remove('active');
+  document.body.classList.add('game-active');
+  
+  if (document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen().catch(err => {
+      console.log(`Erro ao tentar entrar em tela cheia: ${err.message} (${err.name})`);
+    });
+  }
+  
   showPoints(1);
 }
 
