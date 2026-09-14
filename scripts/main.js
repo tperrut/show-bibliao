@@ -67,7 +67,10 @@ function resetGame() {
   currentScore = 0;
   currentQuestion = 0;
   jokersUsed = { cinquenta: false, pastores: false, pulos: 0 };
-  document.getElementById('current-score').textContent = '0';
+  const currentScoreEl = document.getElementById('current-score');
+  if (currentScoreEl) currentScoreEl.textContent = '0';
+  const currentScoreDisplay = document.getElementById('current-score-display');
+  if (currentScoreDisplay) currentScoreDisplay.textContent = '0';
   document.body.classList.remove('game-active');
   
   if (document.fullscreenElement && document.exitFullscreen) {
@@ -137,4 +140,67 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === "Escape") modal.classList.remove('active');
         });
     }
+});
+
+// Modal de Questionários
+document.addEventListener('DOMContentLoaded', function() {
+  const openQBtn = document.getElementById('open-questionnaires');
+  const qModal = document.getElementById('questionnaires-modal');
+  const closeQBtn = document.getElementById('close-questionnaires');
+  const qList = document.getElementById('questionnaires-list');
+
+  const availableQuestionnaires = [
+    { file: 'perguntas_adolescentes_dificult.js', name: 'Adolescentes - Difícil' },
+    { file: 'perguntas_adolescentes_easy.js', name: 'Adolescentes - Fácil' },
+    { file: 'perguntas_embaralhadas.js', name: 'Embaralhadas' },
+    { file: 'perguntas_homens.js', name: 'Homens' },
+    { file: 'perguntas_jovens.js', name: 'Jovens' },
+    { file: 'perguntas_mulheres.js', name: 'Mulheres' },
+    { file: 'perguntas_pre_adolescentes.js', name: 'Pré-Adolescentes' },
+    { file: 'perguntas_test.js', name: 'Teste' }
+  ];
+
+  if (openQBtn && qModal && closeQBtn && qList) {
+    availableQuestionnaires.forEach(q => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-primary';
+      btn.style.width = '100%';
+      btn.style.marginTop = '0';
+      btn.style.fontSize = '1.2rem';
+      btn.textContent = q.name;
+      btn.onclick = () => {
+        const script = document.createElement('script');
+        script.src = `perguntas/${q.file}`;
+        script.onload = () => {
+          // Remover telas anteriores
+          document.querySelectorAll('.points-screen, .question-screen').forEach(el => el.remove());
+          
+          // Recriar telas com as novas perguntas
+          createGameScreens();
+
+          // Atualizar o nome do questionário na tela
+          const nameEl = document.getElementById('current-questionnaire-name');
+          if (nameEl) nameEl.textContent = `Questionário: ${q.name}`;
+
+          // Mostrar modal de sucesso no lugar do alert
+          openAjudaModal(`<div style="text-align:center;">
+            <h3 style="color:var(--primary-color); margin-bottom:15px;">Sucesso</h3>
+            <p style="font-size:1.2rem;">Questionário "<b>${q.name}</b>" carregado!</p>
+          </div>`);
+          qModal.classList.remove('active');
+        };
+        document.body.appendChild(script);
+      };
+      qList.appendChild(btn);
+    });
+
+    openQBtn.onclick = () => qModal.classList.add('active');
+    closeQBtn.onclick = () => qModal.classList.remove('active');
+    qModal.onclick = (e) => {
+      if (e.target === qModal) qModal.classList.remove('active');
+    };
+    document.addEventListener('keydown', function(e) {
+      if (e.key === "Escape") qModal.classList.remove('active');
+    });
+  }
 });

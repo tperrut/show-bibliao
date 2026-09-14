@@ -1,4 +1,4 @@
-const questions = [
+var questions = [
   {
     points: 10,
     question: "Quem abriu o Mar Vermelho com seu cajado?",

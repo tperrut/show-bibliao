@@ -1,4 +1,4 @@
-const questions = [
+var questions = [
   {
     points: 10,
     question: "Quem foi o primeiro rei de Israel",

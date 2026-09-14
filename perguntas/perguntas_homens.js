@@ -1,4 +1,4 @@
-const questions = [
+var questions = [
   {
     points: 10,
     question: "Quem foi vendido por seus irmãos e se tornou \"governador\" do Egito?",

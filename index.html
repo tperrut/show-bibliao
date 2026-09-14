@@ -12,16 +12,51 @@
   <div class="container">
     <header>
       <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo">
-      <h1>SHOW DO Biblião</h1>
-      <div class="score-display">Pontuação: <span id="current-score">0</span> pontos</div>
+      <h1>SHOW DO BIBLIÃO</h1>
+
+      <!-- Painel Principal durante o jogo -->
+      <div class="game-dashboard" id="game-dashboard" style="display: none;">
+        <!-- Destaque de Pontuação Atual com Troféu -->
+        <div class="trophy-score-badge">
+          <span class="trophy-icon">🏆</span>
+          <span>Pontuação: <strong id="current-score-display">0</strong> pts</span>
+        </div>
+
+        <!-- Nível de Dificuldade -->
+        <div class="difficulty-badge" id="difficulty-badge">
+          Nível: <strong id="difficulty-level">Fácil</strong>
+        </div>
+
+        <!-- Painel de Decisão (Se Errar / Se Parar / Se Acertar) -->
+        <div class="decision-board">
+          <div class="decision-box stop">
+            <span class="decision-label">SE PARAR</span>
+            <span class="decision-value" id="score-parar">0 pts</span>
+          </div>
+          <div class="decision-box win">
+            <span class="decision-label">SE ACERTAR</span>
+            <span class="decision-value" id="score-acertar">10 pts</span>
+          </div>
+        </div>
+      </div>
+
+
     </header>
-    <div class="progress" id="progress"></div>
+
+    <!-- Trilha de Progresso (Stepper de 1 a 15) -->
+    <div id="current-questionnaire-name"
+      style="text-align: center; font-size: 1.1rem; color: #ccc; margin-bottom: 8px; font-style: italic; font-weight: bold; letter-spacing: 0.5px;">
+      Questionário: Padrão
+    </div>
+    <div class="progress-wrapper">
+      <div class="progress" id="progress"></div>
+    </div>
+
     <!-- Tela inicial -->
     <div class="slide active" id="welcome-screen">
-      <div class="welcome-content">
-        <!-- ...dentro de .welcome-content... -->
-        <h2>Bem-vindo ao Show do Biblião!</h2>
-        <button id="open-rules" class="btn-primary" type="button">Ver Regras</button>
+      <div class="welcome-content"
+        style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 16px;">
+        <button id="open-rules" class="btn-primary" type="button" style="margin-top: 0;">Ver Regras</button>
 
         <!-- Modal de Regras -->
         <div id="rules-modal" class="modal">
@@ -67,9 +102,28 @@
             </div>
           </div>
         </div>
-        <button id="start-game" class="btn-primary">Iniciar Jogo</button>
+        <button id="open-questionnaires" class="btn-primary" type="button" style="margin-top: 0;">Escolher
+          Perguntas</button>
+
+        <!-- Modal de Questionários -->
+        <div id="questionnaires-modal" class="modal">
+          <div class="modal-content rules-modal-content">
+            <span class="close-modal" id="close-questionnaires">&times;</span>
+            <div class="rules-header">
+              <img src="images/logo.png" alt="Logo" class="rules-logo">
+              <h2>Escolher Questionário</h2>
+            </div>
+            <div class="questionnaires-list" id="questionnaires-list"
+              style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+              <!-- Opções carregadas via JS -->
+            </div>
+          </div>
+        </div>
+
+        <button id="start-game" class="btn-primary" style="margin-top: 0;">Iniciar Jogo</button>
       </div>
     </div>
+
     <!-- Modal de Ajuda -->
     <div id="ajuda-modal" class="modal">
       <div class="modal-content">
@@ -77,20 +131,19 @@
         <div id="ajuda-modal-text"></div>
       </div>
     </div>
-    <!-- Slides de perguntas e pontuação são gerados dinamicamente -->
+
     <!-- Tela final -->
     <div class="slide" id="final-screen">
       <div class="final-content">
-        <!-- <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo"> -->
         <h2 id="final-title">Parabéns!</h2>
         <div class="final-score" id="final-score">0 pontos</div>
-        <p id="final-message">Você completou o Show do Biblão!</p>
+        <p id="final-message">Você completou o Show do Biblião!</p>
         <button id="play-again" class="btn-primary">Jogar Novamente</button>
       </div>
     </div>
   </div>
+
   <script src="scripts/perguntas.js"></script>
-  <!-- <script src="scripts/game.js"></script> -->
   <script src="scripts/state.js"></script>
   <script src="scripts/questions.js"></script>
   <script src="scripts/screens.js"></script>
@@ -101,7 +154,7 @@
   <audio id="aplausos-audio" src="sons/aplausos.mp3" preload="auto"></audio>
   <audio id="eeeeee-criancas-audio" src="sons/eeeeee-criancas.mp3" preload="auto"></audio>
   <audio id="fiasco-audio" src="sons/fiasco.mp3" preload="auto"></audio>
-  <audio id="cartas-audio" src="sons/cartas.mp3" preload="auto"></audio>
+  <audio id="cartas-audio" src="sons/piao-da-casa-propria-inicio.mp3" preload="auto"></audio>
   <audio id="ajuda-audio" src="sons/ajuda.mp3" preload="auto"></audio>
   <audio id="correto-audio" src="sons/correto.mp3" preload="auto"></audio>
   <audio id="errado-audio" src="sons/errado.mp3" preload="auto"></audio>

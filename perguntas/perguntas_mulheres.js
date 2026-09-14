@@ -1,4 +1,4 @@
-const questions = [
+var questions = [
   {
     points: 10,
     question: "Que Salmo apresenta Deus como o Pastor Divino?",

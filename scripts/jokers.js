@@ -35,26 +35,19 @@ function handleOptionClick() {
         }
         this.classList.add('correct');
         currentScore = questions[currentQuestion].points;
-        document.getElementById('current-score').textContent = currentScore;
+        const currentScoreEl = document.getElementById('current-score');
+        if (currentScoreEl) currentScoreEl.textContent = currentScore;
+        
+        // Atualiza também o novo painel
+        const currentScoreDisplay = document.getElementById('current-score-display');
+        if (currentScoreDisplay) currentScoreDisplay.textContent = currentScore;
 
-        // Mensagem de acerto
-        let nextValue = (questions[currentQuestion + 1]) ? questions[currentQuestion + 1].points : null;
-        let html = `
-            <div style="text-align:center">
-                <h2>Parabéns! Você acertou!</h2>
-                <p>Sua pontuação: <b>${currentScore} pontos</b></p>
-                ${nextValue ? `<p>Próxima pergunta vale <b>${nextValue} pontos</b></p>` : `<p>Você completou todas as perguntas!</p>`}
-            </div>
-        `;
         setTimeout(() => {
-
-        openFeedbackModal(html, () => {
             if (currentQuestion < questions.length - 1) {
                 showPoints(currentQuestion + 2);
             } else {
                 finishGame(true);
             }
-        });
         }, 3000);
     } else {
         this.classList.add('incorrect');
@@ -65,17 +58,11 @@ function handleOptionClick() {
             audio.currentTime = 0;
             audio.play();
         }
-        // Mensagem de erro
-        let html = `
-            <div style="text-align:center">
-                <h2>Você errou!</h2>
-                <p>Sua jornada no Show do Biblão acabou.</p>
-                <p>Pontuação final: <b>${currentScore} pontos</b></p>
-            </div>
-        `;
-                setTimeout(() => {
-                 openFeedbackModal(html, () => finishGame(false));
-                 }, 3000);
+        
+        // Finaliza o jogo após 3 segundos sem mostrar modal de erro
+        setTimeout(() => {
+            finishGame(false);
+        }, 3000);
     }
 }
 
@@ -95,6 +82,10 @@ function setupAjudaPastores(questionNumber) {
     const pastoresBtn = document.getElementById(`ajuda-pastores-${questionNumber}`);
     if (!pastoresBtn) return;
     pastoresBtn.classList.toggle('ajuda-usada', jokersUsed.pastores);
+    
+    const subtext = pastoresBtn.parentElement.querySelector('.ajuda-subtext');
+    if (subtext) subtext.textContent = jokersUsed.pastores ? 'uso restante: 0' : 'uso restante: 1';
+
     pastoresBtn.onclick = function () {
         if (jokersUsed.pastores) {
             openAjudaModal('<div style="text-align:center"><b>Você já usou a ajuda dos Pastores!</b></div>');
@@ -102,6 +93,7 @@ function setupAjudaPastores(questionNumber) {
         }
         playAjudaAudio();
         jokersUsed.pastores = true;
+        if (subtext) subtext.textContent = 'uso restante: 0';
         pastoresBtn.classList.add('ajuda-usada');
         // Aplica efeito visual na imagem
         const img = pastoresBtn.querySelector('img');
@@ -117,6 +109,10 @@ function setupAjudaClasse(questionNumber) {
     const classeBtn = document.getElementById(`ajuda-classe-${questionNumber}`);
     if (!classeBtn) return;
     classeBtn.classList.toggle('ajuda-usada', jokersUsed.classe);
+    
+    const subtext = classeBtn.parentElement.querySelector('.ajuda-subtext');
+    if (subtext) subtext.textContent = jokersUsed.classe ? 'uso restante: 0' : 'uso restante: 1';
+
     classeBtn.onclick = function () {
         if (jokersUsed.classe) {
             openAjudaModal('<div style="text-align:center"><b>Você já usou a ajuda da Classe!</b></div>');
@@ -124,6 +120,7 @@ function setupAjudaClasse(questionNumber) {
         }
         playAjudaAudio();
         jokersUsed.classe = true;
+        if (subtext) subtext.textContent = 'uso restante: 0';
         classeBtn.classList.add('ajuda-usada');
         // Aplica efeito visual na imagem
         const img = classeBtn.querySelector('img');
@@ -139,6 +136,10 @@ function setupAjudaPulos(questionNumber) {
     const pulosBtn = document.getElementById(`ajuda-pulos-${questionNumber}`);
     if (!pulosBtn) return;
     pulosBtn.classList.toggle('ajuda-usada', jokersUsed.pulos >= 1);
+    
+    const subtext = pulosBtn.parentElement.querySelector('.ajuda-subtext');
+    if (subtext) subtext.textContent = (jokersUsed.pulos >= 1) ? 'uso restante: 0' : 'uso restante: 1';
+
     pulosBtn.onclick = function () {
         playPuloAudio();
         if (jokersUsed.pulos >= 1) {
@@ -146,6 +147,7 @@ function setupAjudaPulos(questionNumber) {
             return;
         }
         jokersUsed.pulos++;
+        if (subtext) subtext.textContent = 'uso restante: 0';
         if (jokersUsed.pulos >= 1) pulosBtn.classList.add('ajuda-usada');
         // Aplica efeito visual na imagem
         const img = pulosBtn.querySelector('img');
@@ -153,7 +155,10 @@ function setupAjudaPulos(questionNumber) {
         // Ao pular, atribui a pontuação da pergunta atual (como se tivesse acertado)
         if (!respostaBloqueada) {
             currentScore = questions[currentQuestion].points;
-            document.getElementById('current-score').textContent = currentScore;
+            const currentScoreEl = document.getElementById('current-score');
+            if (currentScoreEl) currentScoreEl.textContent = currentScore;
+            const currentScoreDisplay = document.getElementById('current-score-display');
+            if (currentScoreDisplay) currentScoreDisplay.textContent = currentScore;
             // Desabilita apenas as opções de resposta
             document.querySelectorAll(`#question-${questionNumber} .option`).forEach(opt => {
                 opt.style.pointerEvents = 'none';
@@ -179,12 +184,17 @@ function setupAjudaCartas(questionNumber) {
     const cartasBtn = document.getElementById(`ajuda-cartas-${questionNumber}`);
     if (!cartasBtn) return;
     cartasBtn.classList.toggle('ajuda-usada', jokersUsed.cartas);
+    
+    const subtext = cartasBtn.parentElement.querySelector('.ajuda-subtext');
+    if (subtext) subtext.textContent = jokersUsed.cartas ? 'uso restante: 0' : 'uso restante: 1';
+
     cartasBtn.onclick = function () {
         if (jokersUsed.cartas) {
             openAjudaModal('<div style="text-align:center"><b>Você já usou sua ajuda de Cartas!</b></div>');
             return;
         }
         jokersUsed.cartas = true;
+        if (subtext) subtext.textContent = 'uso restante: 0';
         cartasBtn.classList.add('ajuda-usada');
         // Aplica efeito visual na imagem
         const img = cartasBtn.querySelector('img');
@@ -241,7 +251,7 @@ function sortearCartaMisteriosa(questionNumber, mensagens) {
         openFeedbackModal(
             `<div style="text-align:center">
                 <img src="images/carta${carta}.jpg" alt="Carta Misteriosa" style="max-width:100%;border-radius:8px;margin-bottom:10px;">
-                <br>${mensagens[carta]}
+                <br><span style="font-size: 1.5rem; font-weight: bold;">${mensagens[carta]}</span>
             </div>`,
             () => {
                 if (carta > 0) {
