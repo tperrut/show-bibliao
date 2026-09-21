@@ -1,0 +1,16 @@
+{
+  "name": "show-biblao",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Show do Biblião - jogo de perguntas bíblicas",
+  "scripts": {
+    "seed": "node scripts/importSeed.js",
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  },
+  "devDependencies": {
+    "terser": "^5.16.0"
+  }
+}

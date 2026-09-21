@@ -142,58 +142,93 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Modal de Questionários
+// Modal de Questionários (carregados do Firestore)
 document.addEventListener('DOMContentLoaded', function() {
   const openQBtn = document.getElementById('open-questionnaires');
   const qModal = document.getElementById('questionnaires-modal');
   const closeQBtn = document.getElementById('close-questionnaires');
   const qList = document.getElementById('questionnaires-list');
+  const QUESTIONS_TARGET = 15;
 
-  const availableQuestionnaires = [
-    { file: 'perguntas_adolescentes_dificult.js', name: 'Adolescentes - Difícil' },
-    { file: 'perguntas_adolescentes_easy.js', name: 'Adolescentes - Fácil' },
-    { file: 'perguntas_embaralhadas.js', name: 'Embaralhadas' },
-    { file: 'perguntas_homens.js', name: 'Homens' },
-    { file: 'perguntas_jovens.js', name: 'Jovens' },
-    { file: 'perguntas_mulheres.js', name: 'Mulheres' },
-    { file: 'perguntas_pre_adolescentes.js', name: 'Pré-Adolescentes' },
-    { file: 'perguntas_test.js', name: 'Teste' }
-  ];
+  function isIncomplete(q) {
+    return q.questions_count !== QUESTIONS_TARGET;
+  }
+
+  // Carrega um questionário do banco e recria as telas do jogo.
+  async function loadAndRenderQuestionnaire(q) {
+    if (isIncomplete(q)) {
+      openAjudaModal(`<div style="text-align:center;">
+        <h3 style="color:var(--primary-color); margin-bottom:15px;">Questionário incompleto</h3>
+        <p style="font-size:1.2rem;">O questionário "<b>${q.name}</b>" tem ${q.questions_count ?? 0} de ${QUESTIONS_TARGET} perguntas. Complete o cadastro no painel administrativo.</p>
+      </div>`);
+      return;
+    }
+    try {
+      const loaded = await loadQuestions(q.id);
+      if (loaded.length !== QUESTIONS_TARGET) {
+        openAjudaModal(`<div style="text-align:center;">
+          <h3 style="color:var(--primary-color); margin-bottom:15px;">Questionário incompleto</h3>
+          <p style="font-size:1.2rem;">O questionário "<b>${q.name}</b>" possui ${loaded.length} de ${QUESTIONS_TARGET} perguntas. Complete o cadastro no painel administrativo.</p>
+        </div>`);
+        return;
+      }
+      window.questions = loaded;
+      document.querySelectorAll('.points-screen, .question-screen').forEach(el => el.remove());
+      createGameScreens();
+      const nameEl = document.getElementById('current-questionnaire-name');
+      if (nameEl) nameEl.textContent = `Questionário: ${q.name}`;
+      openAjudaModal(`<div style="text-align:center;">
+        <h3 style="color:var(--primary-color); margin-bottom:15px;">Sucesso</h3>
+        <p style="font-size:1.2rem;">Questionário "<b>${q.name}</b>" carregado!</p>
+      </div>`);
+      qModal.classList.remove('active');
+    } catch (err) {
+      console.error(err);
+      openAjudaModal(`<div style="text-align:center;">
+        <h3 style="color:var(--error-color, #e74c3c); margin-bottom:15px;">Erro</h3>
+        <p style="font-size:1.2rem;">Não foi possível carregar o questionário. Verifique a conexão.</p>
+      </div>`);
+    }
+  }
+
+  // Popula a lista de questionários a partir do Firestore.
+  // Só questionários completos (15 perguntas) podem ser selecionados.
+  async function loadQuestionnairesFromDb() {
+    qList.innerHTML = '<p style="text-align:center; color:#ccc;">Carregando…</p>';
+    try {
+      const questionnaires = await listQuestionnaires();
+      qList.innerHTML = '';
+      if (!questionnaires.length) {
+        qList.innerHTML = '<p style="text-align:center; color:#ccc;">Nenhum questionário cadastrado.</p>';
+        return;
+      }
+      questionnaires.forEach(q => {
+        const complete = !isIncomplete(q);
+        const btn = document.createElement('button');
+        btn.className = 'btn-primary';
+        btn.style.width = '100%';
+        btn.style.marginTop = '0';
+        btn.style.fontSize = '1.2rem';
+        if (complete) {
+          btn.textContent = q.name;
+          btn.onclick = () => loadAndRenderQuestionnaire(q);
+        } else {
+          btn.disabled = true;
+          btn.style.opacity = '0.5';
+          btn.style.cursor = 'not-allowed';
+          btn.textContent = `${q.name} — ${q.questions_count ?? 0}/${QUESTIONS_TARGET} (incompleto)`;
+          btn.title = 'Questionário incompleto: só é possível jogar com 15 perguntas cadastradas.';
+        }
+        qList.appendChild(btn);
+      });
+    } catch (err) {
+      console.error(err);
+      qList.innerHTML = '<p style="text-align:center; color:#e74c3c;">Erro ao carregar questionários.</p>';
+    }
+  }
 
   if (openQBtn && qModal && closeQBtn && qList) {
-    availableQuestionnaires.forEach(q => {
-      const btn = document.createElement('button');
-      btn.className = 'btn-primary';
-      btn.style.width = '100%';
-      btn.style.marginTop = '0';
-      btn.style.fontSize = '1.2rem';
-      btn.textContent = q.name;
-      btn.onclick = () => {
-        const script = document.createElement('script');
-        script.src = `perguntas/${q.file}`;
-        script.onload = () => {
-          // Remover telas anteriores
-          document.querySelectorAll('.points-screen, .question-screen').forEach(el => el.remove());
-          
-          // Recriar telas com as novas perguntas
-          createGameScreens();
-
-          // Atualizar o nome do questionário na tela
-          const nameEl = document.getElementById('current-questionnaire-name');
-          if (nameEl) nameEl.textContent = `Questionário: ${q.name}`;
-
-          // Mostrar modal de sucesso no lugar do alert
-          openAjudaModal(`<div style="text-align:center;">
-            <h3 style="color:var(--primary-color); margin-bottom:15px;">Sucesso</h3>
-            <p style="font-size:1.2rem;">Questionário "<b>${q.name}</b>" carregado!</p>
-          </div>`);
-          qModal.classList.remove('active');
-        };
-        document.body.appendChild(script);
-      };
-      qList.appendChild(btn);
-    });
-
+    loadQuestionnairesFromDb();
     openQBtn.onclick = () => qModal.classList.add('active');
     closeQBtn.onclick = () => qModal.classList.remove('active');
     qModal.onclick = (e) => {
