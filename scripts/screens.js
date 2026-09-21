@@ -12,15 +12,24 @@ function createGameScreens() {
   questions.forEach((q, index) => {
     const qNum = index + 1;
 
+    // Banner de mudança de nível
+    let levelMessage = '';
+    if (qNum === 6) {
+      levelMessage = `<div class="level-up-banner medio">⭐ VOCÊ CHEGOU AO NÍVEL MÉDIO! ⭐</div>`;
+    } else if (qNum === 11) {
+      levelMessage = `<div class="level-up-banner dificil">🔥 PREPARE-SE: NÍVEL DIFÍCIL! 🔥</div>`;
+    }
+
     // Slide de pontuação
     const pointsScreen = document.createElement('div');
     pointsScreen.className = 'slide points-screen';
     pointsScreen.id = `points-${qNum}`;
     pointsScreen.innerHTML = `
+      ${levelMessage}
       <h2>Pergunta número ${qNum}</h2>
       <div class="points-value">${q.points} pontos</div>
       <div class="controls">
-        <button class="btn-primary" onclick="showQuestion(${qNum})">Responder</button>
+        <button class="btn-primary" onclick="showQuestion(${qNum})">${qNum === 1 ? 'Iniciar' : 'Próxima'}</button>
       </div>
     `;
     container.appendChild(pointsScreen);

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Show do Biblião</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/admin.css">
+</head>
+
+<body>
+  <div class="admin-page admin-root">
+    <div class="admin-header">
+      <div>
+        <a class="back-link" href="index.html">&larr; Voltar ao jogo</a>
+        <h1>Administração de Perguntas</h1>
+      </div>
+      <div class="actions hidden" id="auth-actions">
+        <span id="user-email"></span>
+        <button type="button" class="btn btn-secondary" id="logout-btn">Sair</button>
+      </div>
+    </div>
+
+    <!-- Tela de login -->
+    <div class="card" id="login-view">
+      <h2>Entrar</h2>
+      <div class="message error hidden" id="login-error"></div>
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="admin@email.com" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="login-password">Senha</label>
+        <input type="password" id="login-password" placeholder="Senha" autocomplete="current-password">
+      </div>
+      <button type="button" class="btn btn-primary" id="login-btn">Entrar</button>
+      <div class="login-extra">
+        <button type="button" class="btn btn-secondary" id="forgot-password-btn">Esqueci minha senha</button>
+      </div>
+    </div>
+
+    <!-- Painel autenticado (vistas mutuamente exclusivas via hash routing) -->
+    <div id="admin-view" class="hidden">
+
+      <!-- === VISTA: LISTAGEM DE QUESTIONÁRIOS === -->
+      <section id="view-questionnaires" class="admin-view-section hidden">
+        <div class="section-header">
+          <h2>Questionários</h2>
+          <div class="section-actions">
+            <button type="button" class="btn btn-primary" id="add-questionnaire-btn">+ Novo Questionário</button>
+          </div>
+        </div>
+
+        <div class="message error hidden" id="questionnaire-error">
+          <span id="questionnaire-error-msg"></span>
+          <button type="button" class="btn btn-secondary" id="questionnaires-retry-btn">Tentar novamente</button>
+        </div>
+
+        <div id="questionnaires-loading" class="table-state hidden">
+          <div class="spinner"></div>
+          <p>Carregando questionários…</p>
+        </div>
+
+        <div id="questionnaires-empty" class="table-state hidden">
+          <p>Nenhum questionário cadastrado ainda.</p>
+          <button type="button" class="btn btn-primary" id="empty-new-questionnaire-btn">+ Novo Questionário</button>
+        </div>
+
+        <div id="questionnaires-table-wrapper" class="table-wrapper">
+          <div class="table-responsive">
+            <table class="admin-table hidden" id="questionnaires-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th class="col-count">Perguntas</th>
+                  <th class="col-actions">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="questionnaires-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- === VISTA: VISUALIZAR QUESTIONÁRIO (detail) === -->
+      <section id="view-questionnaire-detail" class="admin-view-section hidden">
+        <div class="breadcrumb">
+          <a href="#/questionnaires">&larr; Questionários</a>
+          <span>/</span>
+          <span>Visualizar</span>
+        </div>
+
+        <div class="message error hidden" id="detail-error">
+          <span id="detail-error-msg"></span>
+          <button type="button" class="btn btn-secondary" id="detail-retry-btn">Tentar novamente</button>
+        </div>
+
+        <div id="detail-loading" class="table-state hidden">
+          <div class="spinner"></div>
+          <p>Carregando questionário…</p>
+        </div>
+
+        <div id="detail-main" class="hidden">
+          <div class="section-header">
+            <div>
+              <h2 id="detail-name"></h2>
+              <p id="detail-meta" class="detail-meta"></p>
+            </div>
+            <div class="section-actions">
+              <button type="button" class="btn btn-secondary" id="detail-back-btn">Voltar</button>
+              <button type="button" class="btn btn-secondary" id="detail-edit-btn">Editar</button>
+              <button type="button" class="btn btn-primary" id="detail-add-question-btn">+ Nova Pergunta</button>
+            </div>
+          </div>
+
+          <div id="detail-empty" class="table-state hidden">
+            <p>Este questionário ainda não tem perguntas.</p>
+            <button type="button" class="btn btn-primary" id="detail-empty-new-btn">+ Nova Pergunta</button>
+          </div>
+
+          <div id="detail-questions" class="detail-questions"></div>
+        </div>
+      </section>
+
+      <!-- === VISTA: CRIAR/EDITAR QUESTIONÁRIO (edit inclui perguntas) === -->
+      <section id="view-questionnaire-form" class="admin-view-section hidden">
+        <div class="breadcrumb">
+          <a href="#/questionnaires">&larr; Questionários</a>
+        </div>
+        <div class="form-section">
+          <h3 id="form-title-questionnaire">Novo Questionário</h3>
+          <div class="message error hidden" id="questionnaire-form-error"></div>
+          <div class="message success hidden" id="questionnaire-form-success"></div>
+          <!-- Mesma estrutura para criar e editar; título/valores alternam em openQuestionnaireForm(id) -->
+          <div class="field">
+            <label for="qn-name">Nome do questionário</label>
+            <input type="text" id="qn-name" placeholder="Ex.: Jovens - Fácil">
+          </div>
+          <div class="field">
+            <label for="qn-desc">Descrição (opcional)</label>
+            <input type="text" id="qn-desc" placeholder="Descrição">
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="save-questionnaire-btn">Salvar Questionário</button>
+            <button type="button" class="btn btn-secondary" id="cancel-questionnaire-btn">Voltar</button>
+          </div>
+        </div>
+
+        <!-- Bloco de perguntas: visível em criar e editar (questionário completo).
+             Na criação fica indisponível até o primeiro salvamento. -->
+        <div id="edit-questions-block" class="hidden">
+          <div class="section-header edit-questions-header">
+            <div>
+              <h3>Perguntas</h3>
+              <p id="edit-questions-progress" class="detail-meta"></p>
+            </div>
+            <div class="section-actions">
+              <button type="button" class="btn btn-primary" id="edit-add-question-btn">+ Nova Pergunta</button>
+            </div>
+          </div>
+
+          <div id="edit-questions-empty" class="table-state hidden">
+            <p>Este questionário ainda não tem perguntas. Você pode cadastrá-las aos poucos.</p>
+            <button type="button" class="btn btn-primary" id="edit-questions-empty-btn">+ Nova Pergunta</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table hidden" id="edit-questions-table">
+              <thead>
+                <tr>
+                  <th class="col-count">Ordem</th>
+                  <th>Pontos</th>
+                  <th>Enunciado</th>
+                  <th class="col-count">Alts.</th>
+                  <th class="col-actions">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="edit-questions-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- === VISTA: LISTAGEM DE PERGUNTAS === -->
+      <section id="view-questions" class="admin-view-section hidden">
+        <div class="breadcrumb">
+          <a href="#/questionnaires">&larr; Questionários</a>
+          <span>/</span>
+          <span>Perguntas</span>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <h2 id="questions-view-title">Perguntas</h2>
+            <p id="questions-questionnaire-name" style="margin:6px 0 0; color:#78909c; font-size:0.9rem;"></p>
+          </div>
+          <div class="section-actions">
+            <button type="button" class="btn btn-secondary" id="questions-back-btn">Voltar</button>
+            <button type="button" class="btn btn-primary" id="add-question-btn">+ Nova Pergunta</button>
+          </div>
+        </div>
+
+        <div class="message error hidden" id="questionnaire-questions-error">
+          <span id="questions-error-msg"></span>
+          <button type="button" class="btn btn-secondary" id="questions-retry-btn">Tentar novamente</button>
+        </div>
+
+        <div id="questions-loading" class="table-state hidden">
+          <div class="spinner"></div>
+          <p>Carregando perguntas…</p>
+        </div>
+
+        <div id="questions-empty" class="table-state hidden">
+          <p>Este questionário ainda não tem perguntas.</p>
+          <button type="button" class="btn btn-primary" id="empty-new-question-btn">+ Nova Pergunta</button>
+        </div>
+
+        <div id="questions-table-wrapper" class="table-wrapper">
+          <div class="table-responsive">
+            <table class="admin-table" id="questions-table">
+              <thead>
+                <tr>
+                  <th class="col-count">Ordem</th>
+                  <th>Pontos</th>
+                  <th>Enunciado</th>
+                  <th class="col-count">Alts.</th>
+                  <th class="col-actions">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="questions-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- === VISTA: CRIAR/EDITAR PERGUNTA === -->
+      <section id="view-question-form" class="admin-view-section hidden">
+        <div class="breadcrumb">
+          <a href="#/questionnaires">&larr; Questionários</a>
+          <span>/</span>
+          <a href="#" id="question-form-back-link">Perguntas</a>
+        </div>
+        <div class="form-section">
+          <h3 id="form-title-question">Nova pergunta</h3>
+          <div class="message error hidden" id="question-form-error"></div>
+
+          <div class="field">
+            <label for="q-order">Ordem (1 a 15)</label>
+            <input type="number" id="q-order" min="1" max="15" value="1">
+          </div>
+          <div class="field">
+            <label for="q-points-display">Pontos (calculado pela ordem)</label>
+            <input type="text" id="q-points-display" readonly value="10 pts">
+          </div>
+          <div class="field textarea">
+            <label for="q-text">Enunciado</label>
+            <textarea id="q-text" rows="3" placeholder="Texto da pergunta"></textarea>
+          </div>
+          <div class="field">
+            <label>Alternativas (marque a correta)</label>
+            <p class="options-hint">Exatamente uma alternativa deve estar marcada como correta.</p>
+            <div id="question-options-container"></div>
+            <button type="button" class="btn btn-secondary" id="add-question-option-btn">+ Adicionar alternativa</button>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="save-question-btn">Salvar Pergunta</button>
+            <button type="button" class="btn btn-secondary" id="cancel-question-btn">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Firebase (SDK compat via CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script src="scripts/firebaseConfig.js"></script>
+  <script src="scripts/firebaseService.js"></script>
+  <script src="scripts/admin/shared.js"></script>
+  <script src="scripts/admin/auth.js"></script>
+  <script src="scripts/admin/questionnaires.js"></script>
+  <script src="scripts/admin/questionnaireForm.js"></script>
+  <script src="scripts/admin/questionnaireDetail.js"></script>
+  <script src="scripts/admin/questions.js"></script>
+  <script src="scripts/admin/questionForm.js"></script>
+  <script src="scripts/adminApp.js"></script>
+</body>
+
+</html>
