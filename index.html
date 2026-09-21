@@ -121,6 +121,7 @@
         </div>
 
         <button id="start-game" class="btn-primary" style="margin-top: 0;">Iniciar Jogo</button>
+        <a id="admin-link" class="btn-primary admin-link" href="admin.html" style="margin-top: 0; text-decoration: none;">Administração</a>
       </div>
     </div>
 
@@ -143,9 +144,15 @@
     </div>
   </div>
 
+  <!-- Firebase (SDK compat via CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script src="scripts/firebaseConfig.js"></script>
+  <script src="scripts/firebaseService.js"></script>
   <script src="scripts/perguntas.js"></script>
   <script src="scripts/state.js"></script>
-  <script src="scripts/questions.js"></script>
   <script src="scripts/screens.js"></script>
   <script src="scripts/progress.js"></script>
   <script src="scripts/jokers.js"></script>
@@ -156,7 +163,6 @@
   <audio id="fiasco-audio" src="sons/fiasco.mp3" preload="auto"></audio>
   <audio id="cartas-audio" src="sons/piao-da-casa-propria-inicio.mp3" preload="auto"></audio>
   <audio id="ajuda-audio" src="sons/ajuda.mp3" preload="auto"></audio>
-  <audio id="correto-audio" src="sons/correto.mp3" preload="auto"></audio>
   <audio id="errado-audio" src="sons/errado.mp3" preload="auto"></audio>
   <audio id="tambor-audio" src="sons/tambor.mp3" preload="auto"></audio>
   <audio id="pulo-audio" src="sons/pulo.mp3" preload="auto"></audio>
