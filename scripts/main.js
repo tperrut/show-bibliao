@@ -89,11 +89,7 @@ function finishGame(victory = true) {
  */
 function resetGame() {
   debugLog('resetGame — zerando estado');
-  currentScore = 0;
-  currentQuestion = 0;
-  jokersUsed = { cinquenta: false, pastores: false, pulos: 0 };
-  const currentScoreDisplay = document.getElementById('current-score-display');
-  if (currentScoreDisplay) currentScoreDisplay.textContent = '0';
+  resetState();
   document.body.classList.remove('game-active');
   
   if (document.fullscreenElement && document.exitFullscreen) {

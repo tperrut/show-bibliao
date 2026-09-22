@@ -8,8 +8,7 @@
  */
 function handleOptionClick() {
     if (respostaBloqueada || questionAnswered) return;
-    questionAnswered = true;
-    respostaBloqueada = true;
+    markAnswered();
     const isCorrect = this.getAttribute('data-correct') === 'true';
 
     // Desabilita todas as opções
@@ -34,9 +33,7 @@ function handleOptionClick() {
             audio.play();
         }
         this.classList.add('correct');
-        currentScore = questions[currentQuestion].points;
-        const currentScoreDisplay = document.getElementById('current-score-display');
-        if (currentScoreDisplay) currentScoreDisplay.textContent = currentScore;
+        setScore(questions[currentQuestion].points);
 
         setTimeout(() => {
             if (currentQuestion < questions.length - 1) {
@@ -83,12 +80,11 @@ function setupAjudaPastores(questionNumber) {
     if (subtext) subtext.textContent = jokersUsed.pastores ? 'uso restante: 0' : 'uso restante: 1';
 
     pastoresBtn.onclick = function () {
-        if (jokersUsed.pastores) {
+        playAjudaAudio();
+        if (!useJoker('pastores')) {
             openAjudaModal('<div style="text-align:center"><b>Você já usou a ajuda dos Pastores!</b></div>');
             return;
         }
-        playAjudaAudio();
-        jokersUsed.pastores = true;
         if (subtext) subtext.textContent = 'uso restante: 0';
         pastoresBtn.classList.add('ajuda-usada');
         // Aplica efeito visual na imagem
@@ -110,12 +106,11 @@ function setupAjudaClasse(questionNumber) {
     if (subtext) subtext.textContent = jokersUsed.classe ? 'uso restante: 0' : 'uso restante: 1';
 
     classeBtn.onclick = function () {
-        if (jokersUsed.classe) {
+        playAjudaAudio();
+        if (!useJoker('classe')) {
             openAjudaModal('<div style="text-align:center"><b>Você já usou a ajuda da Classe!</b></div>');
             return;
         }
-        playAjudaAudio();
-        jokersUsed.classe = true;
         if (subtext) subtext.textContent = 'uso restante: 0';
         classeBtn.classList.add('ajuda-usada');
         // Aplica efeito visual na imagem
@@ -138,11 +133,10 @@ function setupAjudaPulos(questionNumber) {
 
     pulosBtn.onclick = function () {
         playPuloAudio();
-        if (jokersUsed.pulos >= 1) {
+        if (!useJoker('pulos')) {
             openAjudaModal('<div style="text-align:center"><b>Você já usou o seu pulo!</b></div>');
             return;
         }
-        jokersUsed.pulos++;
         if (subtext) subtext.textContent = 'uso restante: 0';
         if (jokersUsed.pulos >= 1) pulosBtn.classList.add('ajuda-usada');
         // Aplica efeito visual na imagem
@@ -150,14 +144,12 @@ function setupAjudaPulos(questionNumber) {
         if (img) img.classList.add('ajuda-usada');
         // Ao pular, atribui a pontuação da pergunta atual (como se tivesse acertado)
         if (!respostaBloqueada) {
-            currentScore = questions[currentQuestion].points;
-            const currentScoreDisplay = document.getElementById('current-score-display');
-            if (currentScoreDisplay) currentScoreDisplay.textContent = currentScore;
+            setScore(questions[currentQuestion].points);
             // Desabilita apenas as opções de resposta
             document.querySelectorAll(`#question-${questionNumber} .option`).forEach(opt => {
                 opt.style.pointerEvents = 'none';
             });
-            respostaBloqueada = true;
+            markAnswered();
         }
        setTimeout(() => {
         openFeedbackModal(
@@ -183,11 +175,10 @@ function setupAjudaCartas(questionNumber) {
     if (subtext) subtext.textContent = jokersUsed.cartas ? 'uso restante: 0' : 'uso restante: 1';
 
     cartasBtn.onclick = function () {
-        if (jokersUsed.cartas) {
+        if (!useJoker('cartas')) {
             openAjudaModal('<div style="text-align:center"><b>Você já usou sua ajuda de Cartas!</b></div>');
             return;
         }
-        jokersUsed.cartas = true;
         if (subtext) subtext.textContent = 'uso restante: 0';
         cartasBtn.classList.add('ajuda-usada');
         // Aplica efeito visual na imagem

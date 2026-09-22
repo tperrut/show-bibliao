@@ -43,13 +43,12 @@ function updateDecisionBoard() {
 
   const pararEl = document.getElementById('score-parar');
   const acertarEl = document.getElementById('score-acertar');
-  const currentScoreDisplay = document.getElementById('current-score-display');
   const difficultyLevelEl = document.getElementById('difficulty-level');
   const difficultyBadgeEl = document.getElementById('difficulty-badge');
 
   if (pararEl) pararEl.textContent = `${stopVal} pts`;
   if (acertarEl) acertarEl.textContent = `${winVal} pts`;
-  if (currentScoreDisplay) currentScoreDisplay.textContent = currentScore;
+  renderHud();
   
   if (difficultyLevelEl && difficultyBadgeEl) {
     const level = levelForQuestion(currentQuestion + 1);
@@ -109,7 +108,7 @@ function showPoints(questionNumber) {
 
   document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
   document.getElementById(`points-${questionNumber}`).classList.add('active');
-  currentQuestion = questionNumber - 1;
+  setQuestionIndex(questionNumber - 1);
   initProgressBar();
 }
 
@@ -119,12 +118,11 @@ function showPoints(questionNumber) {
 function showQuestion(questionNumber) {
   reabilitarAjudas(questionNumber);
   removeConfetti();
-  questionAnswered = false;
-  respostaBloqueada = false;
+  clearAnswerLock();
 
   document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
   document.getElementById(`question-${questionNumber}`).classList.add('active');
-  currentQuestion = questionNumber - 1;
+  setQuestionIndex(questionNumber - 1);
 
   initProgressBar();
 
