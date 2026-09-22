@@ -3,7 +3,6 @@
 // ===============================
 
 async function loadQuestionsView(questionnaireId) {
-  adminState.questionnaireId = questionnaireId;
   hideMessage('questionnaire-questions-error');
 
   const titleEl = $('questions-view-title');
@@ -98,9 +97,10 @@ function showQuestionsError(text) {
 
 async function onDeleteQuestion(questionId) {
   if (!confirm('Excluir esta pergunta?')) return;
+  const { questionnaireId } = parseAdminRoute();
   try {
-    await deleteQuestion(adminState.questionnaireId, questionId);
-    await loadQuestionsView(adminState.questionnaireId);
+    await deleteQuestion(questionnaireId, questionId);
+    await loadQuestionsView(questionnaireId);
   } catch (err) {
     console.error(err);
     showQuestionsError('Erro ao excluir pergunta.');
@@ -114,8 +114,9 @@ function initQuestionsView() {
   }
 
   const openNewQuestion = () => {
-    adminState.questionReturnPath = `/questionnaires/${adminState.questionnaireId}/questions`;
-    navigate(`/questionnaires/${adminState.questionnaireId}/questions/new`);
+    const { questionnaireId } = parseAdminRoute();
+    adminState.questionReturnPath = `/questionnaires/${questionnaireId}/questions`;
+    navigate(`/questionnaires/${questionnaireId}/questions/new`);
   };
 
   const addBtn = $('add-question-btn');
@@ -130,7 +131,10 @@ function initQuestionsView() {
 
   const retryBtn = $('questions-retry-btn');
   if (retryBtn) {
-    retryBtn.addEventListener('click', () => loadQuestionsView(adminState.questionnaireId));
+    retryBtn.addEventListener('click', () => {
+      const { questionnaireId } = parseAdminRoute();
+      loadQuestionsView(questionnaireId);
+    });
   }
 
   const tbody = $('questions-table-body');
@@ -139,9 +143,10 @@ function initQuestionsView() {
       const btn = event.target.closest('button[data-action]');
       if (!btn) return;
       const id = btn.dataset.id;
+      const { questionnaireId } = parseAdminRoute();
       if (btn.dataset.action === 'edit-question') {
-        adminState.questionReturnPath = `/questionnaires/${adminState.questionnaireId}/questions`;
-        navigate(`/questionnaires/${adminState.questionnaireId}/questions/${id}/edit`);
+        adminState.questionReturnPath = `/questionnaires/${questionnaireId}/questions`;
+        navigate(`/questionnaires/${questionnaireId}/questions/${id}/edit`);
       } else if (btn.dataset.action === 'delete-question') {
         onDeleteQuestion(id);
       }

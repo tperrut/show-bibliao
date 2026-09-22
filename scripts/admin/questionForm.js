@@ -1,9 +1,7 @@
 // ===============================
 // FORMULÁRIO DE PERGUNTA (criar / editar) — vista própria
+// Ids em contexto vêm de parseAdminRoute().
 // ===============================
-
-let editingQuestionId = null;
-let formQuestionnaireId = null;
 
 function renderOptionRow(text = '', isCorrect = false, index = 0) {
   const row = document.createElement('div');
@@ -51,11 +49,6 @@ function collectOptions() {
 }
 
 async function openQuestionForm(questionnaireId, questionId) {
-  formQuestionnaireId = questionnaireId;
-  editingQuestionId = questionId || null;
-  adminState.questionnaireId = questionnaireId;
-  adminState.questionId = questionId || null;
-
   hideMessage('question-form-error');
   $('form-title-question').textContent = questionId ? 'Editar pergunta' : 'Nova pergunta';
   $('question-form-back-link').setAttribute('href', questionReturnPath());
@@ -125,9 +118,11 @@ async function onSaveQuestion() {
     return;
   }
 
-  if (!editingQuestionId) {
+  const { questionnaireId, questionId } = parseAdminRoute();
+
+  if (!questionId) {
     try {
-      const existing = await listQuestionsForAdmin(formQuestionnaireId);
+      const existing = await listQuestionsForAdmin(questionnaireId);
       if (existing.length >= QUESTIONS_TARGET) {
         showMessage('question-form-error', `Limite de ${QUESTIONS_TARGET} perguntas atingido neste questionário.`, 'error');
         return;
@@ -150,12 +145,12 @@ async function onSaveQuestion() {
   const saveBtn = $('save-question-btn');
   saveBtn.disabled = true;
   try {
-    if (editingQuestionId) {
-      await updateQuestion(formQuestionnaireId, editingQuestionId, { points, text, order, options });
+    if (questionId) {
+      await updateQuestion(questionnaireId, questionId, { points, text, order, options });
     } else {
-      await createQuestion(formQuestionnaireId, { points, text, order, options });
+      await createQuestion(questionnaireId, { points, text, order, options });
     }
-    navigate(adminState.questionReturnPath || `/questionnaires/${formQuestionnaireId}/questions`);
+    navigate(questionReturnPath());
   } catch (err) {
     console.error(err);
     showMessage('question-form-error', 'Erro ao salvar pergunta.', 'error');
@@ -165,7 +160,8 @@ async function onSaveQuestion() {
 }
 
 function questionReturnPath() {
-  return adminState.questionReturnPath || `/questionnaires/${formQuestionnaireId}/questions`;
+  const { questionnaireId } = parseAdminRoute();
+  return adminState.questionReturnPath || `/questionnaires/${questionnaireId}/questions`;
 }
 
 function initQuestionFormView() {

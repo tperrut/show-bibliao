@@ -1,8 +1,7 @@
 // ===============================
 // VISUALIZAÇÃO DO QUESTIONÁRIO (detail)
+// Ids em contexto vêm de parseAdminRoute().
 // ===============================
-
-let detailQuestionnaireId = null;
 
 function setDetailState(state) {
   $('detail-loading').classList.toggle('hidden', state !== 'loading');
@@ -61,8 +60,6 @@ function renderQuestionnaireDetail(data) {
 }
 
 async function loadQuestionnaireDetail(id) {
-  detailQuestionnaireId = id;
-  adminState.questionnaireId = id;
   $('detail-error').classList.add('hidden');
   setDetailState('loading');
 
@@ -90,13 +87,15 @@ function initQuestionnaireDetailView() {
   const editBtn = $('detail-edit-btn');
   if (editBtn) {
     editBtn.addEventListener('click', () => {
-      navigate(`/questionnaires/${detailQuestionnaireId}/edit`);
+      const { questionnaireId } = parseAdminRoute();
+      navigate(`/questionnaires/${questionnaireId}/edit`);
     });
   }
 
   const goAddQuestion = () => {
-    adminState.questionReturnPath = `/questionnaires/${detailQuestionnaireId}/view`;
-    navigate(`/questionnaires/${detailQuestionnaireId}/questions/new`);
+    const { questionnaireId } = parseAdminRoute();
+    adminState.questionReturnPath = `/questionnaires/${questionnaireId}/view`;
+    navigate(`/questionnaires/${questionnaireId}/questions/new`);
   };
 
   const addBtn = $('detail-add-question-btn');
@@ -107,6 +106,9 @@ function initQuestionnaireDetailView() {
 
   const retryBtn = $('detail-retry-btn');
   if (retryBtn) {
-    retryBtn.addEventListener('click', () => loadQuestionnaireDetail(detailQuestionnaireId));
+    retryBtn.addEventListener('click', () => {
+      const { questionnaireId } = parseAdminRoute();
+      loadQuestionnaireDetail(questionnaireId);
+    });
   }
 }

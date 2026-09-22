@@ -1,9 +1,8 @@
 // ===============================
 // FORMULÁRIO DE QUESTIONÁRIO (criar / editar)
 // Na edição, exibe também o bloco de perguntas (questionário completo).
+// Ids em contexto vêm de parseAdminRoute().
 // ===============================
-
-let editingQuestionnaireId = null;
 
 function hideQuestionnaireFormMessages() {
   hideMessage('questionnaire-form-error');
@@ -45,9 +44,10 @@ function renderEditQuestions(questions) {
 }
 
 async function reloadEditQuestions() {
-  if (!editingQuestionnaireId) return;
+  const { questionnaireId } = parseAdminRoute();
+  if (!questionnaireId) return;
   try {
-    const questions = await listQuestionsForAdmin(editingQuestionnaireId);
+    const questions = await listQuestionsForAdmin(questionnaireId);
     renderEditQuestions(questions);
   } catch (err) {
     console.error(err);
@@ -78,9 +78,6 @@ function renderPendingQuestionsBlock() {
 }
 
 async function openQuestionnaireForm(id) {
-  editingQuestionnaireId = id || null;
-  adminState.questionnaireId = id || null;
-
   hideQuestionnaireFormMessages();
   $('qn-name').value = '';
   $('qn-desc').value = '';
@@ -126,8 +123,9 @@ async function onSaveQuestionnaire() {
   const saveBtn = $('save-questionnaire-btn');
   saveBtn.disabled = true;
   try {
-    if (editingQuestionnaireId) {
-      await updateQuestionnaire(editingQuestionnaireId, { name, description });
+    const { questionnaireId } = parseAdminRoute();
+    if (questionnaireId) {
+      await updateQuestionnaire(questionnaireId, { name, description });
       showMessage('questionnaire-form-success', 'Questionário salvo. Continue editando as perguntas abaixo.', 'success');
     } else {
       const ref = await createQuestionnaire({ name, description });
@@ -142,14 +140,16 @@ async function onSaveQuestionnaire() {
 }
 
 function goToQuestionForm(mode) {
-  adminState.questionReturnPath = `/questionnaires/${editingQuestionnaireId}/edit`;
-  navigate(`/questionnaires/${editingQuestionnaireId}/questions/${mode}`);
+  const { questionnaireId } = parseAdminRoute();
+  adminState.questionReturnPath = `/questionnaires/${questionnaireId}/edit`;
+  navigate(`/questionnaires/${questionnaireId}/questions/${mode}`);
 }
 
 async function onDeleteQuestionFromEdit(questionId) {
   if (!confirm('Excluir esta pergunta?')) return;
+  const { questionnaireId } = parseAdminRoute();
   try {
-    await deleteQuestion(editingQuestionnaireId, questionId);
+    await deleteQuestion(questionnaireId, questionId);
     await reloadEditQuestions();
   } catch (err) {
     console.error(err);
