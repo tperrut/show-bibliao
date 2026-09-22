@@ -33,8 +33,9 @@ O projeto é 100% estático; o deploy é feito em qualquer host estático
 1. Instalar dependências: `npm install` (instala `firebase-admin`).
 2. Baixar as credenciais de service account no Firebase Console
    (Project settings > Service accounts > Generate new private key).
-3. Salvar o arquivo como `serviceAccountKey.json` na raiz (fora do repositório; já está
-   no `.gitignore`).
+3. Salvar o arquivo como `serviceAccountKey.json` **na pasta pai** do repositório
+   (`../serviceAccountKey.json` — fora da raiz servida pelo `npm start` e fora do
+   git).
 4. Rodar: `npm run seed`.
 
 O seed lê os arquivos de `perguntas/*.js` e cria um questionário para cada um, com as
@@ -55,4 +56,5 @@ A configuração do Firebase (`firebaseConfig.js`) já acompanha o front (apiKey
 por design — a segurança real está nas Security Rules).
 
 > **Importante:** nunca exponha o `serviceAccountKey.json` nem credenciais de service
-> account no deploy ou no repositório.
+> account no deploy, no repositório ou em qualquer pasta servida por HTTP
+> (mantenha a key em `../serviceAccountKey.json`, fora da raiz do projeto).

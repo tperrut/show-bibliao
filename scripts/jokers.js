@@ -35,10 +35,6 @@ function handleOptionClick() {
         }
         this.classList.add('correct');
         currentScore = questions[currentQuestion].points;
-        const currentScoreEl = document.getElementById('current-score');
-        if (currentScoreEl) currentScoreEl.textContent = currentScore;
-        
-        // Atualiza também o novo painel
         const currentScoreDisplay = document.getElementById('current-score-display');
         if (currentScoreDisplay) currentScoreDisplay.textContent = currentScore;
 
@@ -155,8 +151,6 @@ function setupAjudaPulos(questionNumber) {
         // Ao pular, atribui a pontuação da pergunta atual (como se tivesse acertado)
         if (!respostaBloqueada) {
             currentScore = questions[currentQuestion].points;
-            const currentScoreEl = document.getElementById('current-score');
-            if (currentScoreEl) currentScoreEl.textContent = currentScore;
             const currentScoreDisplay = document.getElementById('current-score-display');
             if (currentScoreDisplay) currentScoreDisplay.textContent = currentScore;
             // Desabilita apenas as opções de resposta
