@@ -12,10 +12,17 @@
   <div class="container">
     <header>
       <img src="images/logo.png" alt="Logo Igreja Metodista Wesleyana" class="logo">
-      <h1>SHOW DO BIBLIÃO</h1>
+      <div class="header-title-row">
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menu lateral">
+          <span class="nav-toggle-icon" aria-hidden="true">☰</span>
+        </button>
+        <h1>SHOW DO BIBLIÃO</h1>
+      </div>
 
       <!-- Painel Principal durante o jogo -->
       <div class="game-dashboard" id="game-dashboard" style="display: none;">
+        <button type="button" id="exit-game" class="btn-exit-game" title="Sair do jogo" aria-label="Sair do jogo">&larr; Sair</button>
+
         <!-- Destaque de Pontuação Atual com Troféu -->
         <div class="trophy-score-badge">
           <span class="trophy-icon">🏆</span>
@@ -54,60 +61,76 @@
 
     <!-- Tela inicial -->
     <div class="slide active" id="welcome-screen">
-      <div class="welcome-content"
-        style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 16px;">
-        <button id="open-rules" class="btn-primary" type="button" style="margin-top: 0;">Ver Regras</button>
+      <div class="welcome-content">
+        <nav class="main-nav" aria-label="Menu principal">
+          <div class="nav-bar">
+            <button type="button" class="btn-primary nav-item-highlight" id="start-game">Iniciar Jogo</button>
+          </div>
+          <div class="nav-backdrop" id="nav-backdrop" hidden></div>
+          <ul class="nav-menu" id="nav-menu" aria-label="Opções do menu">
+            <li class="nav-menu-header">
+              <span>Menu</span>
+              <button type="button" class="nav-menu-close" id="nav-menu-close" aria-label="Recolher menu">&lsaquo;</button>
+            </li>
+            <li>
+              <button type="button" class="nav-item" id="open-rules">Ver Regras</button>
+            </li>
+            <li>
+              <button type="button" class="nav-item" id="open-questionnaires">Escolher Questionários</button>
+            </li>
+            <li>
+              <a class="nav-item admin-link" id="admin-link" href="admin.html">Administração</a>
+            </li>
+          </ul>
+          <button type="button" class="nav-expand" id="nav-expand" aria-label="Abrir menu lateral" hidden>&rsaquo;</button>
+          <div class="nav-hover-zone" id="nav-hover-zone" aria-hidden="true"></div>
+        </nav>
+      </div>
 
-        <!-- Modal de Regras -->
-        <div id="rules-modal" class="modal">
-          <div class="modal-content rules-modal-content">
-            <span class="close-modal" id="close-rules">&times;</span>
-            <div class="rules-header">
-              <img src="images/logo.png" alt="Logo" class="rules-logo">
-              <h2>Regras do Jogo</h2>
-            </div>
-            <ul class="rules-list">
-              <li>
-                <span class="rules-icon">🎯</span>
-                <span class="rules-text"><b id="rules-questions-count">15 perguntas</b> com valores crescentes</span>
-              </li>
-              <li>
-                <span class="rules-icon">💡</span>
-                <span class="rules-text">Use os <b>recursos de ajuda</b> quando necessário</span>
-              </li>
-              <li>
-                <span class="rules-icon">🛠️</span>
-                <span class="rules-text">
-                  Recursos: <b>Ajuda dos Pastores</b>, <b>Da Classe</b>, <b>Cartas</b> e <b>Pulo</b>
-                </span>
-              </li>
-            </ul>
-            <h3 class="points-title">Pontuação</h3>
-            <div class="points-list rules-points-list" id="rules-points-list">
-              <!-- Linhas renderizadas a partir de POINTS_LADDER (gameRules.js) -->
-            </div>
+      <!-- Modal de Regras -->
+      <div id="rules-modal" class="modal">
+        <div class="modal-content rules-modal-content">
+          <span class="close-modal" id="close-rules">&times;</span>
+          <div class="rules-header">
+            <img src="images/logo.png" alt="Logo" class="rules-logo">
+            <h2>Regras do Jogo</h2>
+          </div>
+          <ul class="rules-list">
+            <li>
+              <span class="rules-icon">🎯</span>
+              <span class="rules-text"><b id="rules-questions-count">15 perguntas</b> com valores crescentes</span>
+            </li>
+            <li>
+              <span class="rules-icon">💡</span>
+              <span class="rules-text">Use os <b>recursos de ajuda</b> quando necessário</span>
+            </li>
+            <li>
+              <span class="rules-icon">🛠️</span>
+              <span class="rules-text">
+                Recursos: <b>Ajuda dos Pastores</b>, <b>Da Classe</b>, <b>Cartas</b> e <b>Pulo</b>
+              </span>
+            </li>
+          </ul>
+          <h3 class="points-title">Pontuação</h3>
+          <div class="points-list rules-points-list" id="rules-points-list">
+            <!-- Linhas renderizadas a partir de POINTS_LADDER (gameRules.js) -->
           </div>
         </div>
-        <button id="open-questionnaires" class="btn-primary" type="button" style="margin-top: 0;">Escolher
-          Perguntas</button>
+      </div>
 
-        <!-- Modal de Questionários -->
-        <div id="questionnaires-modal" class="modal">
-          <div class="modal-content rules-modal-content">
-            <span class="close-modal" id="close-questionnaires">&times;</span>
-            <div class="rules-header">
-              <img src="images/logo.png" alt="Logo" class="rules-logo">
-              <h2>Escolher Questionário</h2>
-            </div>
-            <div class="questionnaires-list" id="questionnaires-list"
-              style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-              <!-- Opções carregadas via JS -->
-            </div>
+      <!-- Modal de Questionários -->
+      <div id="questionnaires-modal" class="modal">
+        <div class="modal-content rules-modal-content">
+          <span class="close-modal" id="close-questionnaires">&times;</span>
+          <div class="rules-header">
+            <img src="images/logo.png" alt="Logo" class="rules-logo">
+            <h2>Escolher Questionário</h2>
+          </div>
+          <div class="questionnaires-list" id="questionnaires-list"
+            style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <!-- Opções carregadas via JS -->
           </div>
         </div>
-
-        <button id="start-game" class="btn-primary" style="margin-top: 0;">Iniciar Jogo</button>
-        <a id="admin-link" class="btn-primary admin-link" href="admin.html" style="margin-top: 0; text-decoration: none;">Administração</a>
       </div>
     </div>
 
@@ -125,7 +148,10 @@
         <h2 id="final-title">Parabéns!</h2>
         <div class="final-score" id="final-score">0 pontos</div>
         <p id="final-message">Você completou o Show do Biblião!</p>
-        <button id="play-again" class="btn-primary">Jogar Novamente</button>
+        <div class="final-actions">
+          <button id="play-again" class="btn-primary">Jogar Novamente</button>
+          <button id="back-home" class="btn-primary btn-outline" type="button">Voltar ao Início</button>
+        </div>
       </div>
     </div>
   </div>

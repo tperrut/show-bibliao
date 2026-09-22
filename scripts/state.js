@@ -10,8 +10,11 @@ let currentQuestion = 0;
 let jokersUsed = { cartas: false, classe: false, pastores: false, pulos: 0 };
 let questionAnswered = false;
 let respostaBloqueada = false;
+// true quando o usuário escolheu um questionário (ou confirmou o padrão) nesta sessão.
+let questionnaireChosen = false;
 
 // Zera o estado para uma nova rodada (mesmas chaves/tipos da forma inicial).
+// questionnaireChosen é persistente na sessão — não zera aqui.
 function resetState() {
   currentScore = 0;
   currentQuestion = 0;
@@ -19,6 +22,11 @@ function resetState() {
   questionAnswered = false;
   respostaBloqueada = false;
   renderHud();
+}
+
+// Marca que um questionário já foi escolhido/confirmado (evita reperguntar ao iniciar).
+function setQuestionnaireChosen() {
+  questionnaireChosen = true;
 }
 
 // Define a pontuação atual e atualiza o HUD.
