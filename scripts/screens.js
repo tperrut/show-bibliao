@@ -88,13 +88,11 @@ function createGameScreens() {
     container.appendChild(questionScreen);
   });
 
-  // Adiciona listeners após renderizar
-  setTimeout(() => {
-    document.querySelectorAll('.option').forEach(option => {
-      option.addEventListener('click', handleOptionClick);
-    });
-    questions.forEach((q, idx) => {
-      setupAjudas(idx + 1);
-    });
-  }, 100);
+  // Bind síncrono pós-render — os elementos já existem após appendChild.
+  document.querySelectorAll('.option').forEach(option => {
+    option.addEventListener('click', handleOptionClick);
+  });
+  questions.forEach((q, idx) => {
+    setupAjudas(idx + 1);
+  });
 }

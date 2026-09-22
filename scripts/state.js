@@ -47,16 +47,36 @@ function clearAnswerLock() {
 
 // Registra o uso de um joker. name: 'cartas' | 'classe' | 'pastores' | 'pulos'.
 // Retorna true se o uso foi aceito, false se já estava esgotado.
+// A regra pura de disponibilidade vive em canUseJoker (grading.js).
 function useJoker(name) {
+  if (!canUseJoker(jokersUsed, name)) return false;
   if (name === 'pulos') {
-    if (jokersUsed.pulos >= 1) return false;
     jokersUsed.pulos++;
     return true;
   }
-  if (!Object.prototype.hasOwnProperty.call(jokersUsed, name)) return false;
-  if (jokersUsed[name]) return false;
   jokersUsed[name] = true;
   return true;
+}
+
+// Snapshot imutável do estado para as funções puras de grading.
+function getStateSnapshot() {
+  return {
+    currentScore,
+    currentQuestion,
+    jokersUsed: { ...jokersUsed },
+    questionAnswered,
+    respostaBloqueada
+  };
+}
+
+// Aplica as mudanças de estado devolvidas por grade* via transições do módulo.
+function applyStateChanges(changes) {
+  if (!changes) return;
+  if ('score' in changes) setScore(changes.score);
+  if ('questionIndex' in changes) setQuestionIndex(changes.questionIndex);
+  if (changes.markAnswered) markAnswered();
+  if (changes.clearAnswerLock) clearAnswerLock();
+  if (changes.useJoker) useJoker(changes.useJoker);
 }
 
 // Renderiza o placar/HUD a partir do estado (ponto único de escrita na UI de score).
