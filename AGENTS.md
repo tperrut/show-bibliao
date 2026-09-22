@@ -30,9 +30,25 @@ Diretrizes de trabalho para colaboradores humanos e agentes de IA neste reposit�
 
 - **Nunca faça commit sozinho, sem autorização.** Commits só acontecem mediante pedido explícito do usuário na conversa.
 - Antes de commitar: mostrar o que será alterado (`git status` / `git diff`) e aguardar a autorização.
-- Mensagens de commit em pt-BR, descritivas, no estilo histórico do repositório (minúsculas, past contando o que mudou).
+- Mensagens de commit em pt-BR, descritivas, no estilo histórico do repositório (minúsculas, passado, contando o que mudou).
 - Não fazer `push`, `amend`, `rebase` ou força-push sem autorização explícita.
 - Nunca commitar segredos: `serviceAccountKey.json` e `node_modules/` já estão no `.gitignore` — manter assim.
+
+### Template de mensagem de commit
+
+Quando o commit for feito por um agente de IA, a mensagem **deve** registrar no corpo qual agente e qual modelo atuaram:
+
+```
+<descrição no estilo do histórico: minúsculas, passado, o que mudou>
+
+Agente: <nome do agente, ex.: opencode>
+Modelo: <id completo do modelo, ex.: opencode/mimo-v2.6>
+```
+
+- **1ª linha:** obrigatória; mesma regra do histórico (pt-BR, minúsculas, sem ponto final).
+- **Corpo:** linha em branco após a 1ª linha, depois os trailers `Agente:` e `Modelo:` (nesta ordem, uma por linha).
+- **Commits 100% manuais** (sem agente): manter só a 1ª linha, sem os trailers.
+- Preencher `Agente`/`Modelo` com os valores reais da sessão que fez o commit — nunca inventar ou copiar de outro commit.
 
 ## Convenções de código
 
