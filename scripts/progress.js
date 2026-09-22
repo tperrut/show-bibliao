@@ -16,8 +16,8 @@ function initProgressBar() {
     step.className = 'progress-step';
     step.textContent = i; // O número SEMPRE é mantido no centro
 
-    if (i === 5 || i === 10) step.classList.add('milestone');
-    if (i === 15) step.classList.add('final-milestone');
+    if (isMilestone(i)) step.classList.add('milestone');
+    if (isFinalStep(i)) step.classList.add('final-milestone');
 
     if (i === currentQuestion + 1) {
       step.classList.add('active');
@@ -52,17 +52,10 @@ function updateDecisionBoard() {
   if (currentScoreDisplay) currentScoreDisplay.textContent = currentScore;
   
   if (difficultyLevelEl && difficultyBadgeEl) {
-    let nivel = 'Fácil';
-    let cor = '#f39c12'; // Laranja
-    
-    if (currentQuestion >= 5 && currentQuestion <= 9) {
-      nivel = 'Médio';
-      cor = '#e67e22'; // Laranja mais forte
-    } else if (currentQuestion >= 10) {
-      nivel = 'Difícil';
-      cor = '#d35400'; // Quase vermelho/abóbora
-    }
-    
+    const level = levelForQuestion(currentQuestion + 1);
+    const nivel = level.label;
+    const cor = level.color;
+
     // Anima a badge apenas quando o nível muda
     if (difficultyLevelEl.textContent !== nivel && currentQuestion > 0) {
       difficultyBadgeEl.classList.remove('level-change-pulse');
@@ -70,7 +63,7 @@ function updateDecisionBoard() {
       void difficultyBadgeEl.offsetWidth;
       difficultyBadgeEl.classList.add('level-change-pulse');
     }
-    
+
     difficultyLevelEl.textContent = nivel;
     difficultyBadgeEl.style.backgroundColor = cor;
     difficultyBadgeEl.style.boxShadow = `0 4px 10px ${cor}40`;
@@ -81,6 +74,7 @@ function updateDecisionBoard() {
  * Inicia o jogo
  */
 function startGame() {
+  if (typeof debugLog === 'function') debugLog('startGame — iniciando rodada', { totalPerguntas: questions.length });
   document.getElementById('welcome-screen').classList.remove('active');
   document.body.classList.add('game-active');
 

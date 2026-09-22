@@ -12,12 +12,11 @@ function createGameScreens() {
   questions.forEach((q, index) => {
     const qNum = index + 1;
 
-    // Banner de mudança de nível
+    // Banner de mudança de nível (texto e limite vêm de LEVEL_BOUNDS)
     let levelMessage = '';
-    if (qNum === 6) {
-      levelMessage = `<div class="level-up-banner medio">⭐ VOCÊ CHEGOU AO NÍVEL MÉDIO! ⭐</div>`;
-    } else if (qNum === 11) {
-      levelMessage = `<div class="level-up-banner dificil">🔥 PREPARE-SE: NÍVEL DIFÍCIL! 🔥</div>`;
+    const levelStart = LEVEL_BOUNDS.find(b => b.start === qNum && b.banner);
+    if (levelStart) {
+      levelMessage = `<div class="level-up-banner ${levelStart.cssClass}">${levelStart.banner}</div>`;
     }
 
     // Slide de pontuação

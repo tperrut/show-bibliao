@@ -1,6 +1,8 @@
 // ===============================
 // UTILITÁRIOS COMPARTILHADOS DO PAINEL
 // ===============================
+// Constantes de regra (QUESTIONS_TARGET, POINTS_LADDER, pointsForOrder)
+// vêm de scripts/gameRules.js — fonte única carregada antes deste arquivo.
 
 const $ = (id) => document.getElementById(id);
 
@@ -11,14 +13,6 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-const POINTS_PROGRESSION = [10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-const QUESTIONS_TARGET = 15;
-
-function pointsForOrder(order) {
-  const index = Number(order) - 1;
-  return POINTS_PROGRESSION[index] ?? 0;
 }
 
 function questionsProgressText(count) {

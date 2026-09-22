@@ -74,7 +74,7 @@ async function openQuestionForm(questionnaireId, questionId) {
     try {
       const existing = await listQuestionsForAdmin(questionnaireId);
       if (existing.length >= QUESTIONS_TARGET) {
-        showMessage('question-form-error', 'Este questionário já tem 15 perguntas (limite atingido).', 'error');
+        showMessage('question-form-error', `Este questionário já tem ${QUESTIONS_TARGET} perguntas (limite atingido).`, 'error');
       }
       const nextOrder = Math.min(existing.length + 1, QUESTIONS_TARGET);
       $('q-order').value = String(nextOrder);
@@ -169,6 +169,17 @@ function questionReturnPath() {
 }
 
 function initQuestionFormView() {
+  // Sincroniza limites do campo de ordem com QUESTIONS_TARGET (gameRules).
+  const orderInputInit = $('q-order');
+  const orderLabelInit = document.querySelector('label[for="q-order"]');
+  if (orderInputInit) {
+    orderInputInit.min = '1';
+    orderInputInit.max = String(QUESTIONS_TARGET);
+  }
+  if (orderLabelInit) {
+    orderLabelInit.textContent = `Ordem (1 a ${QUESTIONS_TARGET})`;
+  }
+
   const saveBtn = $('save-question-btn');
   if (saveBtn) {
     saveBtn.addEventListener('click', onSaveQuestion);

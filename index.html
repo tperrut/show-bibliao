@@ -69,7 +69,7 @@
             <ul class="rules-list">
               <li>
                 <span class="rules-icon">🎯</span>
-                <span class="rules-text"><b>15 perguntas</b> com valores crescentes</span>
+                <span class="rules-text"><b id="rules-questions-count">15 perguntas</b> com valores crescentes</span>
               </li>
               <li>
                 <span class="rules-icon">💡</span>
@@ -83,22 +83,8 @@
               </li>
             </ul>
             <h3 class="points-title">Pontuação</h3>
-            <div class="points-list rules-points-list">
-              <div><span class="point-number">1</span> <span class="point-desc">10 pontos</span></div>
-              <div><span class="point-number">2</span> <span class="point-desc">20 pontos</span></div>
-              <div><span class="point-number">3</span> <span class="point-desc">30 pontos</span></div>
-              <div><span class="point-number">4</span> <span class="point-desc">40 pontos</span></div>
-              <div><span class="point-number">5</span> <span class="point-desc">50 pontos</span></div>
-              <div><span class="point-number">6</span> <span class="point-desc">100 pontos</span></div>
-              <div><span class="point-number">7</span> <span class="point-desc">200 pontos</span></div>
-              <div><span class="point-number">8</span> <span class="point-desc">300 pontos</span></div>
-              <div><span class="point-number">9</span> <span class="point-desc">400 pontos</span></div>
-              <div><span class="point-number">10</span> <span class="point-desc">500 pontos</span></div>
-              <div><span class="point-number">11</span> <span class="point-desc">600 pontos</span></div>
-              <div><span class="point-number">12</span> <span class="point-desc">700 pontos</span></div>
-              <div><span class="point-number">13</span> <span class="point-desc">800 pontos</span></div>
-              <div><span class="point-number">14</span> <span class="point-desc">900 pontos</span></div>
-              <div><span class="point-number">15</span> <span class="point-desc">1000 pontos</span></div>
+            <div class="points-list rules-points-list" id="rules-points-list">
+              <!-- Linhas renderizadas a partir de POINTS_LADDER (gameRules.js) -->
             </div>
           </div>
         </div>
@@ -152,18 +138,22 @@
   <script src="scripts/firebaseConfig.js"></script>
   <script src="scripts/firebaseService.js"></script>
   <script src="scripts/perguntas.js"></script>
+  <script src="scripts/gameRules.js"></script>
   <script src="scripts/state.js"></script>
   <script src="scripts/screens.js"></script>
   <script src="scripts/progress.js"></script>
   <script src="scripts/jokers.js"></script>
   <script src="scripts/visual.js"></script>
   <script src="scripts/main.js"></script>
+  <script>
+    // Log de depuração — confirma que o HTML e os scripts carregaram
+    console.log('[ShowBiblao] index.html carregado em', location.origin || 'file://');
+  </script>
   <audio id="aplausos-audio" src="sons/aplausos.mp3" preload="auto"></audio>
   <audio id="eeeeee-criancas-audio" src="sons/eeeeee-criancas.mp3" preload="auto"></audio>
   <audio id="fiasco-audio" src="sons/fiasco.mp3" preload="auto"></audio>
   <audio id="cartas-audio" src="sons/piao-da-casa-propria-inicio.mp3" preload="auto"></audio>
   <audio id="ajuda-audio" src="sons/ajuda.mp3" preload="auto"></audio>
-  <audio id="errado-audio" src="sons/errado.mp3" preload="auto"></audio>
   <audio id="tambor-audio" src="sons/tambor.mp3" preload="auto"></audio>
   <audio id="pulo-audio" src="sons/pulo.mp3" preload="auto"></audio>
   <audio id="certa-resposta-audio" src="sons/certa-resposta.mp3" preload="auto"></audio>

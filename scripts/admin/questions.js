@@ -29,7 +29,7 @@ async function loadQuestionsView(questionnaireId) {
     const addBtn = $('add-question-btn');
     const emptyAddBtn = $('empty-new-question-btn');
     addBtn.disabled = atLimit;
-    addBtn.textContent = atLimit ? 'Limite de 15 atingido' : '+ Nova Pergunta';
+    addBtn.textContent = atLimit ? `Limite de ${QUESTIONS_TARGET} atingido` : '+ Nova Pergunta';
     emptyAddBtn.disabled = atLimit;
 
     const tbody = $('questions-table-body');

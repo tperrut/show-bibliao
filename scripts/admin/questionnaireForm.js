@@ -19,7 +19,7 @@ function renderEditQuestions(questions) {
   const atLimit = count >= QUESTIONS_TARGET;
 
   addBtn.disabled = atLimit;
-  addBtn.textContent = atLimit ? 'Limite de 15 atingido' : '+ Nova Pergunta';
+  addBtn.textContent = atLimit ? `Limite de ${QUESTIONS_TARGET} atingido` : '+ Nova Pergunta';
   emptyAddBtn.disabled = atLimit;
 
   const emptyState = $('edit-questions-empty');
@@ -31,7 +31,7 @@ function renderEditQuestions(questions) {
     table.classList.add('hidden');
     emptyState.classList.remove('hidden');
     if (atLimit) {
-      emptyState.querySelector('p').textContent = 'Limite de 15 perguntas atingido.';
+      emptyState.querySelector('p').textContent = `Limite de ${QUESTIONS_TARGET} perguntas atingido.`;
     } else {
       emptyState.querySelector('p').textContent =
         'Este questionário ainda não tem perguntas. Você pode cadastrá-las aos poucos.';

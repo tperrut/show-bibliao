@@ -2,11 +2,34 @@
 // INICIALIZAÇÃO E FINALIZAÇÃO
 // ===============================
 
+// Log de depuração — prefixo único para filtrar no Console (F12)
+function debugLog(...args) {
+  console.log('[ShowBiblao]', ...args);
+}
+
+debugLog('main.js carregado');
+
+// Preenche o modal de regras a partir de gameRules (escada e total).
+function renderRulesModal() {
+  const countEl = document.getElementById('rules-questions-count');
+  if (countEl) countEl.textContent = `${QUESTIONS_TARGET} perguntas`;
+
+  const list = document.getElementById('rules-points-list');
+  if (list) {
+    list.innerHTML = POINTS_LADDER.map((points, index) => `
+      <div><span class="point-number">${index + 1}</span> <span class="point-desc">${points} pontos</span></div>
+    `).join('');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+  debugLog('DOM pronto — montando telas');
+  renderRulesModal();
   createGameScreens();
   document.getElementById('start-game').addEventListener('click', startGame);
   document.getElementById('play-again').addEventListener('click', resetGame);
   initProgressBar();
+  debugLog('Telas criadas, listeners de início/reset OK');
 });
 
 function openFeedbackModal(html, callback) {
@@ -33,6 +56,7 @@ function openFeedbackModal(html, callback) {
  * Mostra a tela final, exibe a pontuação, solta confetes e se merecer ganha aplausos
  */
 function finishGame(victory = true) {
+  debugLog('finishGame', { victory, currentScore });
   document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
   document.getElementById('final-screen').classList.add('active');
   document.getElementById('final-score').textContent = `${currentScore} pontos`;
@@ -64,11 +88,10 @@ function finishGame(victory = true) {
  * Reseta o estado do jogo para jogar novamente
  */
 function resetGame() {
+  debugLog('resetGame — zerando estado');
   currentScore = 0;
   currentQuestion = 0;
   jokersUsed = { cinquenta: false, pastores: false, pulos: 0 };
-  const currentScoreEl = document.getElementById('current-score');
-  if (currentScoreEl) currentScoreEl.textContent = '0';
   const currentScoreDisplay = document.getElementById('current-score-display');
   if (currentScoreDisplay) currentScoreDisplay.textContent = '0';
   document.body.classList.remove('game-active');
@@ -148,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const qModal = document.getElementById('questionnaires-modal');
   const closeQBtn = document.getElementById('close-questionnaires');
   const qList = document.getElementById('questionnaires-list');
-  const QUESTIONS_TARGET = 15;
 
   function isIncomplete(q) {
     return q.questions_count !== QUESTIONS_TARGET;
@@ -156,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Carrega um questionário do banco e recria as telas do jogo.
   async function loadAndRenderQuestionnaire(q) {
+    debugLog('loadAndRenderQuestionnaire', { id: q.id, name: q.name, count: q.questions_count });
     if (isIncomplete(q)) {
       openAjudaModal(`<div style="text-align:center;">
         <h3 style="color:var(--primary-color); margin-bottom:15px;">Questionário incompleto</h3>
@@ -173,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       window.questions = loaded;
+      debugLog('Questionário carregado — recriando telas', { perguntas: loaded.length });
       document.querySelectorAll('.points-screen, .question-screen').forEach(el => el.remove());
       createGameScreens();
       const nameEl = document.getElementById('current-questionnaire-name');
@@ -183,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>`);
       qModal.classList.remove('active');
     } catch (err) {
+      debugLog('ERRO ao carregar questionário', err);
       console.error(err);
       openAjudaModal(`<div style="text-align:center;">
         <h3 style="color:var(--error-color, #e74c3c); margin-bottom:15px;">Erro</h3>
@@ -197,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
     qList.innerHTML = '<p style="text-align:center; color:#ccc;">Carregando…</p>';
     try {
       const questionnaires = await listQuestionnaires();
+      debugLog('Questionários recebidos do Firestore', { total: questionnaires.length });
       qList.innerHTML = '';
       if (!questionnaires.length) {
         qList.innerHTML = '<p style="text-align:center; color:#ccc;">Nenhum questionário cadastrado.</p>';
@@ -217,11 +243,12 @@ document.addEventListener('DOMContentLoaded', function() {
           btn.style.opacity = '0.5';
           btn.style.cursor = 'not-allowed';
           btn.textContent = `${q.name} — ${q.questions_count ?? 0}/${QUESTIONS_TARGET} (incompleto)`;
-          btn.title = 'Questionário incompleto: só é possível jogar com 15 perguntas cadastradas.';
+          btn.title = `Questionário incompleto: só é possível jogar com ${QUESTIONS_TARGET} perguntas cadastradas.`;
         }
         qList.appendChild(btn);
       });
     } catch (err) {
+      debugLog('ERRO ao listar questionários', err);
       console.error(err);
       qList.innerHTML = '<p style="text-align:center; color:#e74c3c;">Erro ao carregar questionários.</p>';
     }
