@@ -1,0 +1,21 @@
+{
+  "public": ".",
+  "cleanUrls": true,
+  "rewrites": [],
+  "headers": [
+    {
+      "source": "**/*",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    }
+  ],
+  "unlisted": [
+    "node_modules",
+    "openspec",
+    ".git",
+    ".agents",
+    ".opencode",
+    ".vscode"
+  ]
+}

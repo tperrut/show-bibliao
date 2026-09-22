@@ -1,8 +1,8 @@
 // ===============================
 // SEED / IMPORTAÇÃO DAS PERGUNTAS EXISTENTES
 // Uso: node scripts/importSeed.js
-// Requer: credenciais de service account (Admin SDK) em serviceAccountKey.json
-// e variável GOOGLE_APPLICATION_CREDENTIALS ou arquivo na raiz.
+// Requer: credenciais de service account (Admin SDK) em ../serviceAccountKey.json
+// (pasta pai do repositório — fora da raiz servida) ou GOOGLE_APPLICATION_CREDENTIALS.
 // ===============================
 
 const fs = require('fs');
@@ -11,7 +11,7 @@ const admin = require('firebase-admin');
 
 const PERGUNTAS_DIR = path.join(__dirname, '..', 'perguntas');
 const SERVICE_ACCOUNT = process.env.GOOGLE_APPLICATION_CREDENTIALS ||
-  path.join(__dirname, '..', 'serviceAccountKey.json');
+  path.join(__dirname, '..', '..', 'serviceAccountKey.json');
 
 // Nomes exibidos dos questionários (mesma ordem/mapeamento do antigo availableQuestionnaires).
 const QUESTIONNAIRE_MAP = {
@@ -37,7 +37,7 @@ async function seed() {
   if (!fs.existsSync(SERVICE_ACCOUNT)) {
     throw new Error(
       `Credenciais de service account não encontradas em ${SERVICE_ACCOUNT}. ` +
-      'Baixe-as no Firebase Console e coloque em serviceAccountKey.json (fora do deploy).'
+      'Baixe-as no Firebase Console e coloque em ../serviceAccountKey.json (pasta pai do repositório — fora do deploy).'
     );
   }
 
