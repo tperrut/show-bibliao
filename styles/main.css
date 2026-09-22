@@ -78,32 +78,6 @@ h1 {
   width: 100%;
 }
 
-.progress-step {
-  width: 28px;
-  height: 28px;
-  background: #e3e3e3;
-  border-radius: 50%;
-  color: #1a237e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  opacity: 0.7;
-  border: 2px solid #1a237e;
-}
-
-.progress-step.active {
-  background: #1a237e;
-  color: #fff;
-  opacity: 1;
-}
-
-.progress-step.completed {
-  background: #e53935;
-  color: #fff;
-  opacity: 1;
-}
-
 .slide {
   display: none;
   animation: fadeIn 0.5s;
@@ -785,78 +759,6 @@ body:not(.game-active) .progress-wrapper {
   z-index: 1;
 }
 
-.progress-step {
-  position: relative;
-  z-index: 2;
-  width: 32px;
-  height: 32px;
-  background: #ffffff;
-  border-radius: 50%;
-  color: #1a237e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 0.85rem;
-  opacity: 1;
-  border: 2px solid #b0bec5;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.progress-step.completed {
-  background: #1a237e;
-  color: #ffffff;
-  border-color: #1a237e;
-}
-
-.progress-step.active {
-  background: #e53935;
-  color: #ffffff;
-  border-color: #e53935;
-  transform: scale(1.25);
-  box-shadow: 0 0 12px rgba(229, 57, 53, 0.6);
-  animation: pulse 1.8s infinite;
-}
-
-.progress-step.milestone {
-  border-color: #f39c12;
-}
-
-.progress-step.milestone::after {
-  content: '★';
-  position: absolute;
-  top: -12px;
-  font-size: 10px;
-  color: #f39c12;
-}
-
-.progress-step.final-milestone {
-  border-color: #e53935;
-  font-weight: 900;
-}
-
-.progress-step.final-milestone::after {
-  content: '👑';
-  position: absolute;
-  top: -14px;
-  font-size: 12px;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7);
-  }
-
-  70% {
-    box-shadow: 0 0 0 10px rgba(229, 57, 53, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
-  }
-}
-
 /* Rótulo dos botões de Ajuda */
 .ajuda-container {
   display: flex;
@@ -990,7 +892,7 @@ body:not(.game-active) .progress-wrapper {
   color: #1b5e20;
 }
 
-/* Trilha Conectada com Números Visíveis */
+/* Trilha Conectada com Números Visíveis — bloco canônico de .progress-step */
 .progress-wrapper {
   width: 100%;
   max-width: 850px;
@@ -1050,6 +952,7 @@ body:not(.game-active) .progress-wrapper {
   color: #ffffff;
   border-color: #e53935;
   transform: scale(1.22);
+  box-shadow: 0 0 12px rgba(229, 57, 53, 0.6);
   animation: pulse 1.8s infinite;
 }
 
@@ -1067,6 +970,7 @@ body:not(.game-active) .progress-wrapper {
 
 .progress-step.final-milestone {
   border-color: #e53935;
+  font-weight: 900;
 }
 
 .progress-step.final-milestone::after {

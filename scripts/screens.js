@@ -26,7 +26,7 @@ function createGameScreens() {
     pointsScreen.innerHTML = `
       ${levelMessage}
       <h2>Pergunta número ${qNum}</h2>
-      <div class="points-value">${q.points} pontos</div>
+      <div class="points-value">${escapeHtml(q.points)} pontos</div>
       <div class="controls">
         <button class="btn-primary" onclick="showQuestion(${qNum})">${qNum === 1 ? 'Iniciar' : 'Próxima'}</button>
       </div>
@@ -44,14 +44,14 @@ function createGameScreens() {
       optionsHTML += `
         <div class="option" data-correct="${option.correct}">
           <div class="option-letter">${letters[optIndex]}</div>
-          <div class="option-text">${option.text}</div>
+          <div class="option-text">${escapeHtml(option.text)}</div>
         </div>
       `;
     });
 
     questionScreen.innerHTML = `
     
-      <div class="question-text">${q.question}</div>
+      <div class="question-text">${escapeHtml(q.question)}</div>
       <div class="options">${optionsHTML}</div>
 
       <div class="ajudas">

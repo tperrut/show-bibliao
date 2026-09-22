@@ -3,17 +3,9 @@
 // ===============================
 // Constantes de regra (QUESTIONS_TARGET, POINTS_LADDER, pointsForOrder)
 // vêm de scripts/gameRules.js — fonte única carregada antes deste arquivo.
+// escapeHtml vive em scripts/escapeHtml.js (compartilhado com o jogo).
 
 const $ = (id) => document.getElementById(id);
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
 
 function questionsProgressText(count) {
   const done = Number(count) || 0;

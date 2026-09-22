@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isIncomplete(q)) {
       openAjudaModal(`<div style="text-align:center;">
         <h3 style="color:var(--primary-color); margin-bottom:15px;">Questionário incompleto</h3>
-        <p style="font-size:1.2rem;">O questionário "<b>${q.name}</b>" tem ${q.questions_count ?? 0} de ${QUESTIONS_TARGET} perguntas. Complete o cadastro no painel administrativo.</p>
+        <p style="font-size:1.2rem;">O questionário "<b>${escapeHtml(q.name)}</b>" tem ${q.questions_count ?? 0} de ${QUESTIONS_TARGET} perguntas. Complete o cadastro no painel administrativo.</p>
       </div>`);
       return;
     }
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (loaded.length !== QUESTIONS_TARGET) {
         openAjudaModal(`<div style="text-align:center;">
           <h3 style="color:var(--primary-color); margin-bottom:15px;">Questionário incompleto</h3>
-          <p style="font-size:1.2rem;">O questionário "<b>${q.name}</b>" possui ${loaded.length} de ${QUESTIONS_TARGET} perguntas. Complete o cadastro no painel administrativo.</p>
+          <p style="font-size:1.2rem;">O questionário "<b>${escapeHtml(q.name)}</b>" possui ${loaded.length} de ${QUESTIONS_TARGET} perguntas. Complete o cadastro no painel administrativo.</p>
         </div>`);
         return;
       }
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (nameEl) nameEl.textContent = `Questionário: ${q.name}`;
       openAjudaModal(`<div style="text-align:center;">
         <h3 style="color:var(--primary-color); margin-bottom:15px;">Sucesso</h3>
-        <p style="font-size:1.2rem;">Questionário "<b>${q.name}</b>" carregado!</p>
+        <p style="font-size:1.2rem;">Questionário "<b>${escapeHtml(q.name)}</b>" carregado!</p>
       </div>`);
     } catch (err) {
       debugLog('ERRO ao carregar questionário', err);
