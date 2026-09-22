@@ -33,24 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function openFeedbackModal(html, callback) {
-  document.getElementById('ajuda-modal-text').innerHTML = html;
-  const modal = document.getElementById('ajuda-modal');
-  modal.classList.add('active');
-
-  // Fecha ao clicar no X, fora do modal ou ESC
-  function closeHandler() {
-    modal.classList.remove('active');
-    document.getElementById('close-ajuda-modal').removeEventListener('click', closeHandler);
-    modal.removeEventListener('click', outsideHandler);
-    document.removeEventListener('keydown', escHandler);
-    if (callback) callback();
-  }
-  function outsideHandler(e) { if (e.target === modal) closeHandler(); }
-  function escHandler(e) { if (e.key === "Escape") closeHandler(); }
-
-  document.getElementById('close-ajuda-modal').onclick = closeHandler;
-  modal.onclick = outsideHandler;
-  document.addEventListener('keydown', escHandler);
+  openModal(html, { onClose: callback });
 }
 /**
  * Mostra a tela final, exibe a pontuação, solta confetes e se merecer ganha aplausos
@@ -107,59 +90,26 @@ function resetGame() {
   initProgressBar();
 }
 
-// Modal de regras
+// Modal de regras — abertura via openModal; fechamento (X/outside/ESC) registrado no open.
 document.addEventListener('DOMContentLoaded', function() {
   const openBtn = document.getElementById('open-rules');
-  const modal = document.getElementById('rules-modal');
-  const closeBtn = document.getElementById('close-rules');
+  if (openBtn) {
+    openBtn.onclick = () => openModal(null, { modalId: 'rules-modal' });
+  }
+});
 
-  if (openBtn && modal && closeBtn) {
-    openBtn.onclick = () => modal.classList.add('active');
-    closeBtn.onclick = () => modal.classList.remove('active');
-    // Fecha ao clicar fora do conteúdo
-    modal.onclick = (e) => {
-      if (e.target === modal) modal.classList.remove('active');
-    };
-    // Fecha com ESC
-    document.addEventListener('keydown', function(e) {
-      if (e.key === "Escape") modal.classList.remove('active');
-    });
-  }
-});
 function openAjudaModal(html) {
-  document.getElementById('ajuda-modal-text').innerHTML = html;
-  document.getElementById('ajuda-modal').classList.add('active');
-  // Ao fechar, reabilite as opções
-  const closeBtn = document.getElementById('close-ajuda-modal');
-  const modal = document.getElementById('ajuda-modal');
-  function closeHandler() {
-    modal.classList.remove('active');
-    // Reabilita opções da pergunta atual
-    document.querySelectorAll(`#question-${currentQuestion + 1} .option`).forEach(option => {
-      if (option.style.opacity !== '0.3') // não reabilita as removidas por cartas
-        option.style.pointerEvents = 'auto';
-    });
-    closeBtn.removeEventListener('click', closeHandler);
-    modal.removeEventListener('click', outsideHandler);
-    document.removeEventListener('keydown', escHandler);
-  }
-  function outsideHandler(e) { if (e.target === modal) closeHandler(); }
-  function escHandler(e) { if (e.key === "Escape") closeHandler(); }
-  closeBtn.onclick = closeHandler;
-  modal.onclick = outsideHandler;
-  document.addEventListener('keydown', escHandler);
-}
-document.addEventListener('DOMContentLoaded', function() {
-    const closeBtn = document.getElementById('close-ajuda-modal');
-    const modal = document.getElementById('ajuda-modal');
-    if (closeBtn && modal) {
-        closeBtn.onclick = () => modal.classList.remove('active');
-        modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
-        document.addEventListener('keydown', function(e) {
-            if (e.key === "Escape") modal.classList.remove('active');
-        });
+  openModal(html, {
+    onClose: function () {
+      // Reabilita opções da pergunta atual (não reabilita as removidas por cartas)
+      document.querySelectorAll(`#question-${currentQuestion + 1} .option`).forEach(option => {
+        if (option.style.opacity !== '0.3') {
+          option.style.pointerEvents = 'auto';
+        }
+      });
     }
-});
+  });
+}
 
 // Modal de Questionários (carregados do Firestore)
 document.addEventListener('DOMContentLoaded', function() {
@@ -201,7 +151,6 @@ document.addEventListener('DOMContentLoaded', function() {
         <h3 style="color:var(--primary-color); margin-bottom:15px;">Sucesso</h3>
         <p style="font-size:1.2rem;">Questionário "<b>${q.name}</b>" carregado!</p>
       </div>`);
-      qModal.classList.remove('active');
     } catch (err) {
       debugLog('ERRO ao carregar questionário', err);
       console.error(err);
@@ -252,13 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (openQBtn && qModal && closeQBtn && qList) {
     loadQuestionnairesFromDb();
-    openQBtn.onclick = () => qModal.classList.add('active');
-    closeQBtn.onclick = () => qModal.classList.remove('active');
-    qModal.onclick = (e) => {
-      if (e.target === qModal) qModal.classList.remove('active');
-    };
-    document.addEventListener('keydown', function(e) {
-      if (e.key === "Escape") qModal.classList.remove('active');
-    });
+    // Fechamento (X/outside/ESC) registrado no openModal.
+    openQBtn.onclick = () => openModal(null, { modalId: 'questionnaires-modal' });
   }
 });
