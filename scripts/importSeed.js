@@ -58,6 +58,7 @@ async function seed() {
     const qnRef = await db.collection('questionnaires').add({
       name,
       description: '',
+      year: new Date().getFullYear(),
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
