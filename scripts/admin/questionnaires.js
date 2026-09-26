@@ -40,8 +40,10 @@ function renderQuestionnaireRow(qn) {
   const description = qn.description
     ? `<span class="cell-sub">${escapeHtml(qn.description)}</span>`
     : '';
+  const year = typeof qn.year === 'number' ? qn.year : '—';
   return `<tr>
     <td class="cell-name">${escapeHtml(qn.name || '')}${description}</td>
+    <td class="col-count">${year}</td>
     <td class="col-count">${renderQuestionnaireBadge(qn)}</td>
     <td class="cell-actions">
       <button type="button" class="btn-icon" data-action="view" data-id="${qn.id}" title="Visualizar">${ICON_SVG.view}</button>

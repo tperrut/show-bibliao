@@ -60,6 +60,7 @@ async function listQuestionnaires() {
         id: doc.id,
         name: data.name || 'Sem nome',
         description: data.description || '',
+        year: typeof data.year === 'number' ? data.year : null,
         questions_count: questionsCount
       };
     })
@@ -84,7 +85,8 @@ async function getQuestionnaire(id) {
   return {
     id: doc.id,
     name: doc.data().name || '',
-    description: doc.data().description || ''
+    description: doc.data().description || '',
+    year: typeof doc.data().year === 'number' ? doc.data().year : null
   };
 }
 
@@ -153,24 +155,36 @@ function requireAdmin() {
 }
 
 // CRUD de questionários
-async function createQuestionnaire({ name, description = '' }) {
+
+// Normaliza o ano de edição (`year`): aceita número inteiro entre 1900 e 2100;
+// qualquer outro valor cai para o ano corrente (defesa extra — a validação
+// principal fica no formulário do admin).
+function normalizeYear(value) {
+  const n = Number(value);
+  if (Number.isInteger(n) && n >= 1900 && n <= 2100) return n;
+  return new Date().getFullYear();
+}
+
+async function createQuestionnaire({ name, description = '', year }) {
   requireAdmin();
   const { db } = initFirebase();
   return db.collection('questionnaires').add({
     name,
     description,
+    year: normalizeYear(year),
     questions_count: 0,
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 }
 
-async function updateQuestionnaire(id, { name, description = '' }) {
+async function updateQuestionnaire(id, { name, description = '', year }) {
   requireAdmin();
   const { db } = initFirebase();
   return db.collection('questionnaires').doc(id).update({
     name,
     description,
+    year: normalizeYear(year),
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 }

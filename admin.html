@@ -73,6 +73,7 @@
               <thead>
                 <tr>
                   <th>Nome</th>
+                  <th class="col-count">Ano</th>
                   <th class="col-count">Perguntas</th>
                   <th class="col-actions">Ações</th>
                 </tr>
@@ -140,6 +141,10 @@
           <div class="field">
             <label for="qn-desc">Descrição (opcional)</label>
             <input type="text" id="qn-desc" placeholder="Descrição">
+          </div>
+          <div class="field">
+            <label for="qn-year">Ano</label>
+            <input type="number" id="qn-year" min="1900" max="2100" step="1" placeholder="Ex.: 2026">
           </div>
           <div class="form-actions">
             <button type="button" class="btn btn-primary" id="save-questionnaire-btn">Salvar Questionário</button>
