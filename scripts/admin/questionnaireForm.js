@@ -81,12 +81,15 @@ async function openQuestionnaireForm(id) {
   hideQuestionnaireFormMessages();
   $('qn-name').value = '';
   $('qn-desc').value = '';
+  $('qn-year').value = '';
   $('form-title-questionnaire').textContent = id ? 'Editar Questionário' : 'Novo Questionário';
 
   const questionsBlock = $('edit-questions-block');
   questionsBlock.classList.remove('hidden');
 
   if (!id) {
+    // Na criação, o ano já vem preenchido com o corrente (editável).
+    $('qn-year').value = new Date().getFullYear();
     renderPendingQuestionsBlock();
     $('qn-name').focus();
     return;
@@ -103,11 +106,28 @@ async function openQuestionnaireForm(id) {
     }
     $('qn-name').value = questionnaire.name;
     $('qn-desc').value = questionnaire.description || '';
+    // Documentos legados sem year ficam vazios: o admin escolhe conscientemente.
+    $('qn-year').value = questionnaire.year ?? '';
     renderEditQuestions(questions);
   } catch (err) {
     console.error(err);
     showMessage('questionnaire-form-error', 'Erro ao carregar questionário.', 'error');
   }
+}
+
+// lê e valida o campo "Ano"; retorna o número ou null (com mensagem de erro já exibida).
+function readYearField() {
+  const raw = $('qn-year').value.trim();
+  if (!/^\d{4}$/.test(raw)) {
+    showMessage('questionnaire-form-error', 'Informe um ano válido (entre 1900 e 2100).', 'error');
+    return null;
+  }
+  const year = Number(raw);
+  if (year < 1900 || year > 2100) {
+    showMessage('questionnaire-form-error', 'Informe um ano válido (entre 1900 e 2100).', 'error');
+    return null;
+  }
+  return year;
 }
 
 async function onSaveQuestionnaire() {
@@ -119,16 +139,19 @@ async function onSaveQuestionnaire() {
     return;
   }
 
+  const year = readYearField();
+  if (year === null) return;
+
   hideQuestionnaireFormMessages();
   const saveBtn = $('save-questionnaire-btn');
   saveBtn.disabled = true;
   try {
     const { questionnaireId } = parseAdminRoute();
     if (questionnaireId) {
-      await updateQuestionnaire(questionnaireId, { name, description });
+      await updateQuestionnaire(questionnaireId, { name, description, year });
       showMessage('questionnaire-form-success', 'Questionário salvo. Continue editando as perguntas abaixo.', 'success');
     } else {
-      const ref = await createQuestionnaire({ name, description });
+      const ref = await createQuestionnaire({ name, description, year });
       navigate(`/questionnaires/${ref.id}/edit`);
     }
   } catch (err) {
