@@ -5,6 +5,7 @@
   "description": "Show do Biblião - jogo de perguntas bíblicas",
   "scripts": {
     "seed": "node scripts/importSeed.js",
+    "seed:2026": "node tools/importQuestionarios2026.js",
     "backfill:year": "node tools/backfillYear.js",
     "start": "npx serve . --config serve.json"
   },
