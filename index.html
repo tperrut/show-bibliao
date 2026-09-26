@@ -76,7 +76,14 @@
               <button type="button" class="nav-item" id="open-rules">Ver Regras</button>
             </li>
             <li>
-              <button type="button" class="nav-item" id="open-questionnaires">Escolher Questionários</button>
+              <button type="button" class="nav-item nav-subtoggle" id="open-questionnaires"
+                aria-expanded="false" aria-controls="questionnaires-submenu">
+                Escolher Questionários
+                <span class="nav-submenu-chevron" aria-hidden="true"></span>
+              </button>
+              <ul class="nav-submenu" id="questionnaires-submenu" hidden>
+                <!-- Entradas por ano renderizadas em main.js -->
+              </ul>
             </li>
             <li>
               <a class="nav-item admin-link" id="admin-link" href="admin.html">Administração</a>

@@ -36,6 +36,15 @@ document.addEventListener('DOMContentLoaded', function() {
   debugLog('Telas criadas, listeners de início/reset/nav/sair OK');
 });
 
+// Expande/recolhe o sub-menu de anos do item "Escolher Questionários".
+function setQuestionnairesSubmenuOpen(open) {
+  const btn = document.getElementById('open-questionnaires');
+  const submenu = document.getElementById('questionnaires-submenu');
+  if (!btn || !submenu) return;
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  submenu.hidden = !open;
+}
+
 // Pede confirmação do questionário antes de iniciar (se ainda não foi escolhido).
 function requestStartGame() {
   if (questionnaireChosen) {
@@ -65,8 +74,12 @@ function requestStartGame() {
     };
   }
   if (chooseQ) {
+    // Com o sub-menu de anos no menu lateral, este botão expande o sub-menu
+    // (e abre o drawer no mobile) em vez de abrir o modal diretamente.
     chooseQ.onclick = function () {
-      openModal(null, { modalId: 'questionnaires-modal' });
+      closeModal();
+      setQuestionnairesSubmenuOpen(true);
+      if (typeof window.abrirMenuLateral === 'function') window.abrirMenuLateral();
     };
   }
   if (cancelStart) {
@@ -117,6 +130,12 @@ function setupMainNav() {
     }
     toggle.setAttribute('aria-expanded', 'false');
   }
+
+  // Expõe a abertura do menu para outros fluxos (ex.: "Escolher questionário"
+  // na confirmação de início de jogo). No desktop o menu já está fixo.
+  window.abrirMenuLateral = function () {
+    if (!mqDesktop.matches) openMenu();
+  };
 
   // Recolhe/expande a barra fixa no web.
   // keepLayout: só move o painel (peek no hover) sem alterar o padding do conteúdo.
@@ -227,14 +246,18 @@ function setupMainNav() {
     if (isOpen()) closeMenu();
   });
 
-  menu.querySelectorAll('.nav-item').forEach(function (item) {
-    item.addEventListener('click', function () {
-      if (!mqDesktop.matches) closeMenu();
-      else if (peekOpen) {
-        peekOpen = false;
-        setCollapsed(false);
-      }
-    });
+  // Itens simples fecham o drawer (mobile)/fixam o peek (desktop).
+  // Delegação de clique: as entradas de ano do sub-menu são criadas depois
+  // (assíncrono) e não estariam num querySelectorAll feito agora. O item pai
+  // fica de fora: ele só expande/recolhe os anos e precisa manter o menu aberto.
+  menu.addEventListener('click', function (e) {
+    const item = e.target.closest('.nav-item');
+    if (!item || item.classList.contains('nav-subtoggle')) return;
+    if (!mqDesktop.matches) closeMenu();
+    else if (peekOpen) {
+      peekOpen = false;
+      setCollapsed(false);
+    }
   });
 
   if (typeof mqDesktop.addEventListener === 'function') {
@@ -416,47 +439,154 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Popula a lista de questionários a partir do Firestore.
+  // Cria o botão de um questionário no modal (incompletos ficam desabilitados).
+  function createQuestionnaireButton(q) {
+    const complete = !isIncomplete(q);
+    const btn = document.createElement('button');
+    btn.className = 'btn-primary';
+    btn.style.width = '100%';
+    btn.style.marginTop = '0';
+    btn.style.fontSize = '1.2rem';
+    if (complete) {
+      btn.textContent = q.name;
+      btn.onclick = () => loadAndRenderQuestionnaire(q);
+    } else {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'not-allowed';
+      btn.textContent = `${q.name} — ${q.questions_count ?? 0}/${QUESTIONS_TARGET} (incompleto)`;
+      btn.title = `Questionário incompleto: só é possível jogar com ${QUESTIONS_TARGET} perguntas cadastradas.`;
+    }
+    return btn;
+  }
+
+  // Grupos por ano em memória (null = "Sem ano"), carregados uma única vez.
+  let yearGroups = null;
+
+  const submenuEl = document.getElementById('questionnaires-submenu');
+
+  // Ícone de pasta para as entradas do sub-menu (SVG inline).
+  const FOLDER_ICON_SVG =
+    '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">' +
+    '<path fill="#f5b942" d="M2 6a2 2 0 0 1 2-2h5.2l2 2H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6z"/>' +
+    '<path fill="#e09b1f" d="M2 9h20v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9z" opacity="0.45"/>' +
+    '</svg>';
+
+  // Anos em ordem decrescente; null ("Sem ano") por último.
+  function orderedYears() {
+    const years = [...yearGroups.keys()]
+      .filter(year => year !== null)
+      .sort((a, b) => b - a);
+    if (yearGroups.has(null)) years.push(null);
+    return years;
+  }
+
+  // Questionários de um ano, em ordem alfabética (seguro para ano inexistente).
+  function sortedByName(year) {
+    const items = yearGroups.get(year) || [];
+    return items
+      .slice()
+      .sort((a, b) => String(a.name).localeCompare(String(b.name), 'pt-BR'));
+  }
+
+  // Carrega e agrupa os questionários uma única vez, sem renderizar.
+  async function ensureYearGroups() {
+    if (yearGroups) return yearGroups;
+    const questionnaires = await listQuestionnaires();
+    debugLog('Questionários recebidos do Firestore', { total: questionnaires.length });
+    // Agrupamento 100% em memória: a listagem já veio completa, sem query extra.
+    const groups = new Map();
+    questionnaires.forEach(q => {
+      const key = typeof q.year === 'number' ? q.year : null;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(q);
+    });
+    yearGroups = groups;
+    return yearGroups;
+  }
+
+  // Preenche o sub-menu do menu lateral com uma entrada por ano.
+  function renderYearSubmenu() {
+    if (!submenuEl || !yearGroups) return;
+    submenuEl.innerHTML = '';
+    if (!yearGroups.size) {
+      submenuEl.innerHTML =
+        '<li class="nav-subitem-empty">Nenhum questionário cadastrado.</li>';
+      return;
+    }
+    orderedYears().forEach(year => {
+      const total = sortedByName(year).length;
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'nav-item nav-subitem' + (year === null ? ' is-untagged' : '');
+      btn.innerHTML =
+        FOLDER_ICON_SVG +
+        `<span class="nav-subitem-label">${year === null ? 'Sem ano' : year}</span>` +
+        `<span class="nav-subitem-count">${total}</span>`;
+      btn.onclick = () => openQuestionnairesModal(year);
+      li.appendChild(btn);
+      submenuEl.appendChild(li);
+    });
+  }
+
+  // Lista de questionários do ano escolhido — responsabilidade única do modal.
   // Só questionários completos (15 perguntas) podem ser selecionados.
-  async function loadQuestionnairesFromDb() {
+  function renderQuestionnairesForYear(year) {
+    qList.innerHTML = '';
+    const items = sortedByName(year);
+    if (!items.length) {
+      qList.innerHTML =
+        '<p style="text-align:center; color:#ccc;">Nenhum questionário neste ano.</p>';
+      return;
+    }
+    items.forEach(q => {
+      qList.appendChild(createQuestionnaireButton(q));
+    });
+  }
+
+  // Abre o modal já listando os questionários do ano clicado no menu lateral.
+  async function openQuestionnairesModal(year) {
+    const title = qModal ? qModal.querySelector('.rules-header h2') : null;
+    if (title) {
+      title.textContent =
+        year === null ? 'Escolher Questionário — Sem ano' : `Escolher Questionário — ${year}`;
+    }
     qList.innerHTML = '<p style="text-align:center; color:#ccc;">Carregando…</p>';
+    // Fechamento (X/outside/ESC) registrado no openModal.
+    openModal(null, { modalId: 'questionnaires-modal' });
     try {
-      const questionnaires = await listQuestionnaires();
-      debugLog('Questionários recebidos do Firestore', { total: questionnaires.length });
-      qList.innerHTML = '';
-      if (!questionnaires.length) {
-        qList.innerHTML = '<p style="text-align:center; color:#ccc;">Nenhum questionário cadastrado.</p>';
-        return;
-      }
-      questionnaires.forEach(q => {
-        const complete = !isIncomplete(q);
-        const btn = document.createElement('button');
-        btn.className = 'btn-primary';
-        btn.style.width = '100%';
-        btn.style.marginTop = '0';
-        btn.style.fontSize = '1.2rem';
-        if (complete) {
-          btn.textContent = q.name;
-          btn.onclick = () => loadAndRenderQuestionnaire(q);
-        } else {
-          btn.disabled = true;
-          btn.style.opacity = '0.5';
-          btn.style.cursor = 'not-allowed';
-          btn.textContent = `${q.name} — ${q.questions_count ?? 0}/${QUESTIONS_TARGET} (incompleto)`;
-          btn.title = `Questionário incompleto: só é possível jogar com ${QUESTIONS_TARGET} perguntas cadastradas.`;
-        }
-        qList.appendChild(btn);
-      });
+      await ensureYearGroups();
+      renderYearSubmenu();
+      renderQuestionnairesForYear(year);
     } catch (err) {
       debugLog('ERRO ao listar questionários', err);
       console.error(err);
-      qList.innerHTML = '<p style="text-align:center; color:#e74c3c;">Erro ao carregar questionários.</p>';
+      qList.innerHTML =
+        '<p style="text-align:center; color:#e74c3c;">Erro ao carregar questionários.</p>';
     }
   }
 
   if (openQBtn && qModal && closeQBtn && qList) {
-    loadQuestionnairesFromDb();
-    // Fechamento (X/outside/ESC) registrado no openModal.
-    openQBtn.onclick = () => openModal(null, { modalId: 'questionnaires-modal' });
+    // Pré-carrega os dados (e já preenche o sub-menu) sem abrir o modal.
+    ensureYearGroups()
+      .then(renderYearSubmenu)
+      .catch(err => {
+        debugLog('ERRO ao pré-carregar questionários', err);
+        console.error(err);
+      });
+
+    // O item pai só expande/recolhe o sub-menu de anos; o modal abre ao
+    // clicar numa entrada de ano.
+    openQBtn.onclick = () => {
+      const willOpen = openQBtn.getAttribute('aria-expanded') !== 'true';
+      setQuestionnairesSubmenuOpen(willOpen);
+      // Se o pré-carregamento falhou, tenta de novo ao expandir.
+      if (willOpen && !yearGroups) {
+        ensureYearGroups()
+          .then(renderYearSubmenu)
+          .catch(err => console.error(err));
+      }
+    };
   }
 });
