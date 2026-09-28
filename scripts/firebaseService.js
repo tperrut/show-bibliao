@@ -276,6 +276,68 @@ async function deleteQuestion(questionnaireId, questionId) {
     .catch(() => {});
 }
 
+// ===============================
+// HISTÓRICO DE JOGADAS
+// ===============================
+// saveGameRecord é a única escrita e é chamada pelo jogo (index.html), que
+// precisa de uma sessão de admin. As leituras (listGameRecords/getGameRecord)
+// e a exclusão são exclusivas do painel — o jogo nunca relê o que grava.
+
+// Grava um registro de partida. createdAt é carimbado pelo servidor.
+async function saveGameRecord(record) {
+  requireAdmin();
+  const { db } = initFirebase();
+  return db.collection('gameHistory').add({
+    ...record,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+// Normaliza um documento da coleção para o formato consumido pelo painel.
+function mapGameRecord(doc) {
+  const data = doc.data();
+  const rounds = Array.isArray(data.rounds) ? data.rounds : [];
+  return {
+    id: doc.id,
+    version: Number(data.version) || 1,
+    questionnaireId: data.questionnaireId || null,
+    questionnaireName: data.questionnaireName || '',
+    playerName: data.playerName || '',
+    className: data.className || '',
+    score: Number(data.score) || 0,
+    outcome: data.outcome === 'win' ? 'win' : 'lose',
+    answeredCount: rounds.length,
+    jokersUsed: data.jokersUsed || {},
+    rounds,
+    decisiveRoundIndex: Number.isInteger(data.decisiveRoundIndex) ? data.decisiveRoundIndex : null,
+    playedAt: data.playedAt || '',
+    savedByEmail: data.savedByEmail || '',
+    createdAt: data.createdAt || null
+  };
+}
+
+// Lista os registros, do mais recente para o mais antigo (uso do painel).
+async function listGameRecords() {
+  const { db } = initFirebase();
+  const snapshot = await db.collection('gameHistory').orderBy('createdAt', 'desc').get();
+  return snapshot.docs.map(mapGameRecord);
+}
+
+// Busca um registro pelo id (tela de detalhe do painel).
+async function getGameRecord(id) {
+  const { db } = initFirebase();
+  const doc = await db.collection('gameHistory').doc(id).get();
+  if (!doc.exists) return null;
+  return mapGameRecord(doc);
+}
+
+// Exclui um registro (painel). O jogo nunca exclui.
+async function deleteGameRecord(id) {
+  requireAdmin();
+  const { db } = initFirebase();
+  return db.collection('gameHistory').doc(id).delete();
+}
+
 // Auth helpers
 async function loginAdmin(email, password) {
   const { auth } = initFirebase();

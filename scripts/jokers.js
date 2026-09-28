@@ -14,8 +14,20 @@ function handleOptionClick() {
     const question = questions[currentQuestion];
     const isLastQuestion = currentQuestion >= questions.length - 1;
 
-    const grade = gradeAnswer(getStateSnapshot(), { isCorrect, question, isLastQuestion });
-    applyStateChanges(grade.stateChanges);
+    // Índice e texto da alternativa escolhida — vão para o round do histórico.
+    // Lidos do DOM aqui (no handler), para o grading continuar puro.
+    const chosenIndex = Array.prototype.indexOf.call(this.parentElement.children, this);
+    const textEl = this.querySelector('.option-text');
+    const chosenText = textEl ? textEl.textContent : (question.options[chosenIndex] || {}).text;
+
+    const grade = gradeAnswer(getStateSnapshot(), {
+      isCorrect,
+      question,
+      isLastQuestion,
+      chosenIndex,
+      chosenText
+    });
+    applyStateChanges(grade.round ? { ...grade.stateChanges, recordRound: grade.round } : grade.stateChanges);
     runEffects(grade.effects, { clickedOption: this });
 }
 
@@ -88,7 +100,7 @@ function setupAjudaPulos(questionNumber) {
     pulosBtn.onclick = function () {
         const question = questions[currentQuestion];
         const grade = gradeSkip(getStateSnapshot(), { question, questionNumber });
-        applyStateChanges(grade.stateChanges);
+        applyStateChanges(grade.round ? { ...grade.stateChanges, recordRound: grade.round } : grade.stateChanges);
         if (grade.accepted) {
             markJokerButtonUsed(pulosBtn, subtext, 'uso restante: 0');
         }
