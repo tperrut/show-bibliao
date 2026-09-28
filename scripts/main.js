@@ -26,13 +26,17 @@ document.addEventListener('DOMContentLoaded', function() {
   debugLog('DOM pronto — montando telas');
   renderRulesModal();
   createGameScreens();
+  setCurrentQuestionnaire(null, 'Padrão');
   document.getElementById('start-game').addEventListener('click', requestStartGame);
   document.getElementById('play-again').addEventListener('click', resetGame);
   const backHomeBtn = document.getElementById('back-home');
   if (backHomeBtn) backHomeBtn.addEventListener('click', resetGame);
+  const saveHistoryBtn = document.getElementById('save-game-history');
+  if (saveHistoryBtn) saveHistoryBtn.addEventListener('click', () => openSaveHistoryPrompt());
   initProgressBar();
   setupMainNav();
   setupExitGame();
+  setupGameHistory();
   debugLog('Telas criadas, listeners de início/reset/nav/sair OK');
 });
 
@@ -69,6 +73,7 @@ function requestStartGame() {
   if (playDefault) {
     playDefault.onclick = function () {
       setQuestionnaireChosen();
+      setCurrentQuestionnaire(null, 'Padrão');
       closeModal();
       startGame();
     };
@@ -303,8 +308,288 @@ function setupExitGame() {
 function openFeedbackModal(html, callback) {
   openModal(html, { onClose: callback });
 }
+
+// ===============================
+// HISTÓRICO DE JOGADAS (prompt da tela final)
+// A montagem do documento é pura (gameHistory.js); aqui ficam só as
+// decisões de UI e o porte do registro pelo portão de login (authGate.js).
+// ===============================
+
+// Chave da última identidade usada — só para pré-preencher o prompt.
+const HISTORY_IDENTITY_KEY = 'showbiblao.lastIdentity';
+
+// Registro que o prompt atual está tratando: pendente retomada do
+// sessionStorage ou null (partida nova, montada do estado vivo).
+let historyPromptRecord = null;
+
+function readLastHistoryIdentity() {
+  try {
+    const raw = localStorage.getItem(HISTORY_IDENTITY_KEY);
+    if (!raw) return { playerName: '', className: '' };
+    const parsed = JSON.parse(raw);
+    return {
+      playerName: typeof parsed.playerName === 'string' ? parsed.playerName : '',
+      className: typeof parsed.className === 'string' ? parsed.className : ''
+    };
+  } catch (e) {
+    return { playerName: '', className: '' };
+  }
+}
+
+function rememberHistoryIdentity(identity) {
+  try {
+    localStorage.setItem(HISTORY_IDENTITY_KEY, JSON.stringify(identity));
+  } catch (e) { /* sem armazenamento — apenas não pré-preenche da próxima vez */ }
+}
+
+function showSaveHistoryEntry() {
+  const btn = document.getElementById('save-game-history');
+  if (btn) btn.hidden = false;
+}
+
+function hideSaveHistoryEntry() {
+  const btn = document.getElementById('save-game-history');
+  if (btn) btn.hidden = true;
+}
+
+// Mensagem dentro do prompt de salvar (erro, info ou sucesso).
+function showHistoryMessage(text, type) {
+  const el = document.getElementById('history-message');
+  if (!el) return;
+  el.textContent = text;
+  el.classList.remove('error', 'success', 'info');
+  el.classList.add(type || 'error');
+  el.classList.add('is-visible');
+}
+
+function setHistoryBusy(busy) {
+  const confirm = document.getElementById('history-save-confirm');
+  const cancel = document.getElementById('history-save-cancel');
+  if (confirm) {
+    confirm.disabled = busy;
+    confirm.textContent = busy ? 'Salvando…' : 'Salvar no histórico';
+  }
+  if (cancel) cancel.disabled = busy;
+}
+
+// Um registro de partida tem `playedAt` (ISO); qualquer outro valor passado
+// por engano (ex.: o evento de clique) é ignorado e o prompt monta um novo.
+function isHistoryRecord(value) {
+  return !!value && typeof value === 'object' && !Array.isArray(value) &&
+    typeof value.playedAt === 'string';
+}
+
 /**
- * Mostra a tela final, exibe a pontuação, solta confetes e se merecer ganha aplausos
+ * Abre o prompt de salvamento. Não é automático: só entra aqui por ação
+ * explícita do jogador, ou pela retomada de um registro pendente.
+ * @param {object} [pendingRecord] - registro retomado do sessionStorage
+ */
+function openSaveHistoryPrompt(pendingRecord) {
+  const record = isHistoryRecord(pendingRecord) ? pendingRecord : null;
+  historyPromptRecord = record;
+  const base = record || {};
+  const identity = readLastHistoryIdentity();
+  const playerName = base.playerName || identity.playerName;
+  const className = base.className || identity.className;
+  const resumed = !!record;
+
+  openModal(`<div style="text-align:center;">
+    <h3 style="color:var(--primary-color); margin-bottom:10px;">Salvar no histórico</h3>
+    <p style="font-size:1.05rem; margin-bottom:16px;">
+      ${resumed
+        ? 'A partida que você jogou ficou guardada. Confirme os dados para salvar.'
+        : 'Guarde a pontuação e as respostas desta partida.'}
+    </p>
+    <div class="history-form">
+      <label for="history-player-name">Nome do jogador</label>
+      <input type="text" id="history-player-name" maxlength="${HISTORY_LIMITS.playerNameMax}"
+             value="${escapeHtml(playerName)}" placeholder="Ex.: Maria Silva" autocomplete="off">
+    </div>
+    <div class="history-form" style="margin-top:12px;">
+      <label for="history-class-name">Classe</label>
+      <input type="text" id="history-class-name" maxlength="${HISTORY_LIMITS.classNameMax}"
+             value="${escapeHtml(className)}" placeholder="Ex.: Jovens" autocomplete="off">
+    </div>
+    <div class="history-message" id="history-message"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" id="history-save-confirm">Salvar no histórico</button>
+      <button type="button" class="btn-primary btn-outline" id="history-save-cancel">Agora não</button>
+    </div>
+  </div>`);
+
+  const confirmBtn = document.getElementById('history-save-confirm');
+  const cancelBtn = document.getElementById('history-save-cancel');
+  const nameInput = document.getElementById('history-player-name');
+
+  if (confirmBtn) confirmBtn.onclick = confirmSaveHistory;
+  if (cancelBtn) {
+    cancelBtn.onclick = function () {
+      closeModal();
+      // Cancelar o prompt de retomada descarta a pendência; na oferta normal
+      // (fim de partida) o registro simplesmente não é salvo.
+      if (resumed) {
+        clearPendingRecord();
+        historyPromptRecord = null;
+      }
+    };
+  }
+  if (nameInput) nameInput.focus();
+}
+
+function confirmSaveHistory() {
+  const nameEl = document.getElementById('history-player-name');
+  const classEl = document.getElementById('history-class-name');
+  const identity = {
+    playerName: nameEl ? nameEl.value.trim() : '',
+    className: classEl ? classEl.value.trim() : ''
+  };
+
+  // Retomada: o reload da aba zerou o estado do jogo, então o registro salvo
+  // é o pendente guardado antes do login (com a identidade atualizada no
+  // prompt), nunca um novo montado de um estado vazio.
+  const record = historyPromptRecord
+    ? {
+        ...historyPromptRecord,
+        playerName: identity.playerName,
+        className: identity.className,
+        savedByEmail: currentUserEmail()
+      }
+    : buildGameRecord({
+        state: getStateSnapshot(),
+        identity,
+        questionnaire: getCurrentQuestionnaire(),
+        outcome: lastOutcome,
+        playedAt: playedAt,
+        savedByEmail: currentUserEmail()
+      });
+
+  const validation = validateGameRecord(record);
+  if (!validation.ok) {
+    showHistoryMessage(validation.errors[0], 'error');
+    return;
+  }
+
+  if (!hasAdminSession()) {
+    if (savePendingRecord(record)) {
+      showLoginRequiredModal();
+    } else {
+      showHistoryMessage('Não foi possível guardar o registro para salvar depois do login.', 'error');
+    }
+    return;
+  }
+
+  persistGameRecord(record);
+}
+
+async function persistGameRecord(record) {
+  setHistoryBusy(true);
+  showHistoryMessage('Salvando no histórico…', 'info');
+  // A autoria é sempre a do admin logado agora, mesmo numa retomada.
+  record.savedByEmail = currentUserEmail();
+  try {
+    await saveGameRecord(record);
+    clearPendingRecord();
+    historyPromptRecord = null;
+    rememberHistoryIdentity({ playerName: record.playerName, className: record.className });
+    hideSaveHistoryEntry();
+    showSavedConfirmation(record);
+  } catch (err) {
+    console.error('[ShowBiblao] Erro ao salvar o registro da partida', err);
+    setHistoryBusy(false);
+    showHistoryMessage('Não foi possível salvar no histórico. Tente novamente.', 'error');
+  }
+}
+
+function showSavedConfirmation(record) {
+  const resultLabel = record.outcome === 'win' ? 'vitória' : 'derrota';
+  openModal(`<div style="text-align:center;">
+    <h3 style="color:var(--primary-color); margin-bottom:10px;">Partida salva!</h3>
+    <p style="font-size:1.05rem;">
+      ${escapeHtml(record.playerName)}${record.className ? ` — ${escapeHtml(record.className)}` : ''}<br>
+      ${record.score} pontos (${resultLabel}) em ${record.answeredCount} pergunta(s).
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" id="history-saved-close">Fechar</button>
+    </div>
+  </div>`);
+
+  const closeBtn = document.getElementById('history-saved-close');
+  if (closeBtn) closeBtn.onclick = closeModal;
+}
+
+// Sem sessão de admin: o registro fica pendente e o jogador vai ao login.
+function showLoginRequiredModal() {
+  openModal(`<div style="text-align:center;">
+    <h3 style="color:var(--primary-color); margin-bottom:10px;">Entrar para salvar</h3>
+    <p style="font-size:1.05rem; margin-bottom:8px;">
+      Só o administrador do painel pode gravar no histórico. A partida ficou guardada
+      nesta aba: entre, volte ao jogo e o salvamento é oferecido de novo.
+    </p>
+    <p style="font-size:0.9rem; color:#607d8b;">Guarde esta aba aberta para não perder o registro.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" id="history-go-login">Ir para o login</button>
+      <button type="button" class="btn-primary btn-outline" id="history-stay-here">Ficar aqui</button>
+    </div>
+  </div>`);
+
+  const goLogin = document.getElementById('history-go-login');
+  const stay = document.getElementById('history-stay-here');
+  if (goLogin) goLogin.onclick = function () { location.href = 'admin.html'; };
+  if (stay) stay.onclick = closeModal;
+}
+
+// Retomada: ao abrir o jogo, uma pendência da mesma aba reaparece.
+function setupGameHistory() {
+  const pending = readPendingRecord();
+  if (!pending) return;
+
+  if (hasAdminSession()) {
+    openSaveHistoryPrompt(pending);
+    return;
+  }
+
+  // A sessão do Firebase Auth é restaurada de forma assíncrona: espera o
+  // primeiro estado de auth antes de decidir entre reabrir o prompt (sessão
+  // confirmada) e avisar que a pendência aguarda login.
+  let resolved = false;
+  const watching = watchAuthSession(signedIn => {
+    if (resolved) return;
+    resolved = true;
+    if (signedIn) openSaveHistoryPrompt(pending);
+    else notifyPendingRecord();
+  });
+
+  // Sem como observar a sessão: avisa e oferece descartar (não prende a pendência).
+  if (!watching) notifyPendingRecord();
+}
+
+function notifyPendingRecord() {
+  openModal(`<div style="text-align:center;">
+    <h3 style="color:var(--primary-color); margin-bottom:10px;">Partida aguardando salvamento</h3>
+    <p style="font-size:1.05rem; margin-bottom:8px;">
+      Há uma partida guardada nesta aba esperando um administrador entrar para salvá-la.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" id="history-go-login">Ir para o login</button>
+      <button type="button" class="btn-primary btn-outline" id="history-discard">Descartar registro</button>
+    </div>
+  </div>`);
+
+  const goLogin = document.getElementById('history-go-login');
+  const discard = document.getElementById('history-discard');
+  if (goLogin) goLogin.onclick = function () { location.href = 'admin.html'; };
+  if (discard) {
+    discard.onclick = function () {
+      clearPendingRecord();
+      closeModal();
+    };
+  }
+}
+
+/**
+ * Mostra a tela final, exibe a pontuação, solta confetes e se merecer ganha aplausos.
+ * A tela final é um destino: o jogador fica aqui (mesmo na derrota) e decide
+ * entre salvar no histórico, jogar de novo ou voltar ao início.
  */
 function finishGame(victory = true) {
   debugLog('finishGame', { victory, currentScore });
@@ -314,6 +599,10 @@ function finishGame(victory = true) {
 
   const dashboard = document.getElementById('game-dashboard');
   if (dashboard) dashboard.style.display = 'none';
+
+  // Estado do fim de partida (resultado e horário) — consumido pelo registro.
+  finishGameState(victory ? 'win' : 'lose');
+  showSaveHistoryEntry();
 
   if (victory) {
     document.getElementById('final-title').textContent = "Parabéns!";
@@ -346,6 +635,10 @@ function resetGame() {
   resetState();
   document.body.classList.remove('game-active');
   removeConfetti();
+  // Partida encerrada: a pendência de salvamento não sobrevive a um reset.
+  clearPendingRecord();
+  historyPromptRecord = null;
+  hideSaveHistoryEntry();
 
   const dashboard = document.getElementById('game-dashboard');
   if (dashboard) dashboard.style.display = 'none';
@@ -422,6 +715,7 @@ document.addEventListener('DOMContentLoaded', function() {
       debugLog('Questionário carregado — recriando telas', { perguntas: loaded.length });
       document.querySelectorAll('.points-screen, .question-screen').forEach(el => el.remove());
       createGameScreens();
+      setCurrentQuestionnaire(q.id, q.name);
       const nameEl = document.getElementById('current-questionnaire-name');
       if (nameEl) nameEl.textContent = `Questionário: ${q.name}`;
       setQuestionnaireChosen();

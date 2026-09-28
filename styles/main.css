@@ -430,6 +430,68 @@ h1 {
   max-width: 320px;
 }
 
+/* Formulário do prompt de salvar no histórico (jogador/classe) */
+.history-form {
+  text-align: left;
+  margin: 0 auto 6px;
+  max-width: 320px;
+}
+
+.history-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1a237e;
+}
+
+.history-form input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #1a237e;
+  background: #fff;
+  border: 2px solid #b0bec5;
+  border-radius: 8px;
+}
+
+.history-form input:focus {
+  outline: none;
+  border-color: #1a237e;
+}
+
+/* Mensagem de erro/sucesso dentro do prompt */
+.history-message {
+  display: none;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.history-message.is-visible {
+  display: block;
+}
+
+.history-message.error {
+  background: #fdecea;
+  color: #b3261e;
+  border: 1px solid #f5c6c2;
+}
+
+.history-message.success {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #a5d6a7;
+}
+
+.history-message.info {
+  background: #e3f2fd;
+  color: #0d47a1;
+  border: 1px solid #90caf9;
+}
+
 .rules {
   background: #e3e3e3;
   border-radius: 10px;
