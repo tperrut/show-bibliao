@@ -14,6 +14,72 @@ service cloud.firestore {
       }
     }
 
+    // Histórico de jogadas —append-only pelo jogo.
+    // Leitura e escrita restritas ao admin: o documento carrega nome do
+    // jogador e classe (dado de aluno), então não é leitura pública.
+    match /gameHistory/{recordId} {
+      allow read: if isAdmin();
+
+      allow create: if isAdmin()
+                    && hasHistoryFields()
+                    && isValidPlayerName()
+                    && isValidClassName()
+                    && isValidHistoryScore()
+                    && isValidHistoryRounds()
+                    && isValidHistoryOutcome();
+
+      allow update, delete: if isAdmin();
+    }
+
+    // Campos obrigatórios do registro de partida.
+    function hasHistoryFields() {
+      return request.resource.data.keys().hasAll([
+        'version',
+        'questionnaireId',
+        'questionnaireName',
+        'playerName',
+        'className',
+        'score',
+        'outcome',
+        'answeredCount',
+        'jokersUsed',
+        'rounds',
+        'decisiveRoundIndex',
+        'playedAt',
+        'savedByEmail',
+        'createdAt'
+      ]);
+    }
+
+    function isValidPlayerName() {
+      let name = request.resource.data.playerName;
+      return name is string && name.size() >= 1 && name.size() <= 60;
+    }
+
+    // Classe é texto livre: pode vir vazia, mas precisa caber no limite.
+    function isValidClassName() {
+      let klass = request.resource.data.className;
+      return klass is string && klass.size() <= 60;
+    }
+
+    function isValidHistoryScore() {
+      let score = request.resource.data.score;
+      return (score is int || score is float)
+             && score >= 0
+             && score <= 1000
+             && score % 1 == 0;
+    }
+
+    function isValidHistoryRounds() {
+      let rounds = request.resource.data.rounds;
+      return rounds is list && rounds.size() <= 15;
+    }
+
+    function isValidHistoryOutcome() {
+      let outcome = request.resource.data.outcome;
+      return outcome == 'win' || outcome == 'lose';
+    }
+
     function isAdmin() {
       return request.auth != null &&
              request.auth.token.email in [
