@@ -8,6 +8,8 @@
 //   #/questionnaires/:id/questions
 //   #/questionnaires/:id/questions/new
 //   #/questionnaires/:id/questions/:qid/edit
+//   #/historico
+//   #/historico/:id
 // ===============================
 
 const ADMIN_VIEWS = [
@@ -15,12 +17,15 @@ const ADMIN_VIEWS = [
   'view-questionnaire-form',
   'view-questionnaire-detail',
   'view-questions',
-  'view-question-form'
+  'view-question-form',
+  'view-game-history',
+  'view-game-history-detail'
 ];
 
 // Fonte única dos ids em contexto: views leem da rota, não de holders paralelos.
 // route: 'list' | 'new-questionnaire' | 'edit-questionnaire' | 'view-questionnaire'
-//      | 'list-questions' | 'new-question' | 'edit-question' | null (inválida)
+//      | 'list-questions' | 'new-question' | 'edit-question'
+//      | 'list-history' | 'view-history' | null (inválida)
 function parseAdminRoute() {
   const raw = location.hash.replace(/^#/, '') || '/questionnaires';
   const parts = raw.split('/').filter(Boolean);
@@ -28,8 +33,22 @@ function parseAdminRoute() {
   const ctx = {
     route: null,
     questionnaireId: null,
-    questionId: null
+    questionId: null,
+    recordId: null
   };
+
+  // #/historico | #/historico/:id — verificado antes do guard de questionários.
+  if (parts[0] === 'historico') {
+    if (parts.length === 1) {
+      ctx.route = 'list-history';
+      return ctx;
+    }
+    if (parts.length === 2) {
+      ctx.route = 'view-history';
+      ctx.recordId = parts[1];
+    }
+    return ctx;
+  }
 
   if (parts[0] !== 'questionnaires') return ctx;
 
@@ -91,12 +110,31 @@ function navigate(path) {
   }
 }
 
+// Aba ativa conforme a rota corrente: sub-rotas (detalhe/edição) mantêm
+// a aba da seção pai acesa. Rota desconhecida cai em Questionários
+// (o default do handleRoute redireciona para lá).
+function setActiveNavTab(route) {
+  const activeId = (route === 'list-history' || route === 'view-history')
+    ? 'nav-tab-historico'
+    : 'nav-tab-questionnaires';
+
+  ['nav-tab-questionnaires', 'nav-tab-historico'].forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    const active = id === activeId;
+    el.classList.toggle('is-active', active);
+    if (active) el.setAttribute('aria-current', 'page');
+    else el.removeAttribute('aria-current');
+  });
+}
+
 function handleRoute() {
   if (!adminState.authUser) {
     return;
   }
 
   const ctx = parseAdminRoute();
+  setActiveNavTab(ctx.route);
 
   switch (ctx.route) {
     case 'list':
@@ -136,6 +174,16 @@ function handleRoute() {
       openQuestionForm(ctx.questionnaireId, ctx.questionId);
       return;
 
+    case 'list-history':
+      showView('view-game-history');
+      loadGameHistory();
+      return;
+
+    case 'view-history':
+      showView('view-game-history-detail');
+      loadGameHistoryDetail(ctx.recordId);
+      return;
+
     default:
       navigate('/questionnaires');
   }
@@ -152,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
   safeInit(initQuestionnaireDetailView);
   safeInit(initQuestionsView);
   safeInit(initQuestionFormView);
+  safeInit(initGameHistoryViews);
 
   window.addEventListener('hashchange', handleRoute);
 

@@ -22,6 +22,18 @@
       </div>
     </div>
 
+    <!-- Abas de navegação entre as seções do painel (visíveis só com login) -->
+    <nav class="admin-nav hidden" id="admin-nav" aria-label="Seções do painel">
+      <a href="#/questionnaires" id="nav-tab-questionnaires">Questionários</a>
+      <a href="#/historico" id="nav-tab-historico">Histórico</a>
+    </nav>
+
+    <!-- Aviso de partida pendente de salvamento (veio do jogo) -->
+    <div class="message info hidden" id="pending-record-notice">
+      <span>Há uma partida aguardando salvamento no jogo.</span>
+      <a class="btn btn-secondary" href="index.html">Voltar ao jogo e salvar</a>
+    </div>
+
     <!-- Tela de login -->
     <div class="card" id="login-view">
       <h2>Entrar</h2>
@@ -276,6 +288,98 @@
         </div>
       </section>
 
+      <!-- === VISTA: HISTÓRICO DE JOGADAS (listagem) === -->
+      <section id="view-game-history" class="admin-view-section hidden">
+        <div class="section-header">
+          <h2>Histórico de jogadas</h2>
+        </div>
+
+        <div class="message error hidden" id="history-error">
+          <span id="history-error-msg"></span>
+          <button type="button" class="btn btn-secondary" id="history-retry-btn">Tentar novamente</button>
+        </div>
+
+        <div id="history-loading" class="table-state hidden">
+          <div class="spinner"></div>
+          <p>Carregando histórico…</p>
+        </div>
+
+        <div id="history-empty" class="table-state hidden">
+          <p>Nenhuma partida salva ainda.</p>
+        </div>
+
+        <div id="history-table-wrapper" class="table-wrapper">
+          <div class="table-responsive">
+            <table class="admin-table hidden" id="history-table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Jogador</th>
+                  <th>Classe</th>
+                  <th>Questionário</th>
+                  <th class="col-count">Pontos</th>
+                  <th>Resultado</th>
+                  <th>Salvo por</th>
+                  <th class="col-actions">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- === VISTA: HISTÓRICO — DETALHE DA PARTIDA === -->
+      <section id="view-game-history-detail" class="admin-view-section hidden">
+        <div class="breadcrumb">
+          <a href="#/historico">&larr; Histórico</a>
+          <span>/</span>
+          <span>Partida</span>
+        </div>
+
+        <div class="message error hidden" id="history-detail-error">
+          <span id="history-detail-error-msg"></span>
+          <button type="button" class="btn btn-secondary" id="history-detail-retry-btn">Tentar novamente</button>
+        </div>
+
+        <div id="history-detail-loading" class="table-state hidden">
+          <div class="spinner"></div>
+          <p>Carregando partida…</p>
+        </div>
+
+        <div id="history-detail-main" class="hidden">
+          <div class="section-header">
+            <div>
+              <h2 id="history-detail-title">Partida</h2>
+              <p id="history-detail-meta" class="detail-meta"></p>
+            </div>
+            <div class="section-actions">
+              <button type="button" class="btn btn-secondary" id="history-detail-back-btn">Voltar</button>
+              <button type="button" class="btn btn-primary" id="history-detail-delete-btn">Excluir registro</button>
+            </div>
+          </div>
+
+          <h3 class="history-section-title">Evidência da partida</h3>
+          <div id="history-print-card" class="history-print-card"></div>
+
+          <h3 class="history-section-title">Perguntas respondidas</h3>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th class="col-count">Ordem</th>
+                  <th class="col-count">Pontos</th>
+                  <th>Enunciado</th>
+                  <th>Resposta do jogador</th>
+                  <th class="col-count">Ajuda</th>
+                </tr>
+              </thead>
+              <tbody id="history-rounds-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
     </div>
   </div>
 
@@ -295,6 +399,7 @@
   <script src="scripts/admin/questionnaireDetail.js"></script>
   <script src="scripts/admin/questions.js"></script>
   <script src="scripts/admin/questionForm.js"></script>
+  <script src="scripts/admin/gameHistory.js"></script>
   <script src="scripts/adminApp.js"></script>
 </body>
 

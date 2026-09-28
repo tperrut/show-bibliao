@@ -58,6 +58,44 @@
   font-size: 0.9rem;
 }
 
+/* ---------- Abas de navegação (Questionários / Histórico) ---------- */
+
+.admin-root .admin-nav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--admin-border);
+}
+
+.admin-root .admin-nav a {
+  position: relative;
+  padding: 10px 20px;
+  margin-bottom: -2px;
+  border-bottom: 2px solid transparent;
+  border-radius: 8px 8px 0 0;
+  color: #546e7a;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.admin-root .admin-nav a:hover {
+  color: var(--admin-primary);
+  background: var(--admin-muted);
+}
+
+.admin-root .admin-nav a.is-active {
+  color: var(--admin-primary);
+  background: var(--admin-muted);
+  border-bottom-color: var(--admin-primary);
+}
+
+.admin-root .admin-nav a:focus-visible {
+  outline: 2px solid var(--admin-primary);
+  outline-offset: -2px;
+}
+
 /* ---------- Cards e vistas ---------- */
 
 .admin-root .card {
@@ -640,6 +678,170 @@
   color: #fff;
   font-size: 0.75rem;
   font-weight: 700;
+}
+
+/* ---------- Histórico de jogadas ---------- */
+
+.admin-root .admin-table .col-date {
+  width: 150px;
+  white-space: nowrap;
+}
+
+.admin-root .history-section-title {
+  margin: 26px 0 10px;
+  color: var(--admin-primary);
+  font-size: 1.1rem;
+}
+
+/* Card do "print" da pergunta decisiva — reconstruído do snapshot gravado. */
+.admin-root .history-print-card {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 1px 3px rgba(26, 35, 126, 0.06);
+}
+
+.admin-root .history-print-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+  color: #546e7a;
+  font-size: 0.85rem;
+}
+
+.admin-root .history-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #e8eaf6;
+  color: var(--admin-primary);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.admin-root .history-print-question {
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #263238;
+  white-space: pre-wrap;
+}
+
+.admin-root .history-print-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-root .history-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  background: var(--admin-muted);
+  font-size: 0.95rem;
+}
+
+.admin-root .history-option-letter {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #cfd8dc;
+  color: #37474f;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.admin-root .history-option-text {
+  flex: 1;
+}
+
+.admin-root .history-option-tag {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eceff1;
+  color: #546e7a;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.admin-root .history-option.is-correct {
+  background: #e8f5e9;
+  border-color: #a5d6a7;
+}
+
+.admin-root .history-option.is-correct .history-option-letter,
+.admin-root .history-option.is-correct .history-option-tag {
+  background: var(--admin-success);
+  color: #fff;
+}
+
+.admin-root .history-option.is-chosen {
+  border-width: 2px;
+  border-color: var(--admin-primary);
+}
+
+.admin-root .history-option.is-chosen .history-option-tag {
+  background: var(--admin-primary);
+  color: #fff;
+}
+
+.admin-root .history-option.is-wrong {
+  background: #fdecea;
+  border-width: 2px;
+  border-color: var(--admin-danger);
+}
+
+.admin-root .history-option.is-wrong .history-option-letter,
+.admin-root .history-option.is-wrong .history-option-tag {
+  background: var(--admin-danger);
+  color: #fff;
+}
+
+.admin-root .history-wrong {
+  color: var(--admin-danger);
+  font-weight: 600;
+}
+
+/* Tags de ajuda usada (coluna "Ajuda" dos rounds) — destaque amarelo. */
+.admin-root .joker-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #ffe082;
+  border: 1px solid #ffca28;
+  color: #6d4c00;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin-root .joker-tag + .joker-tag {
+  margin-left: 4px;
+}
+
+.admin-root .joker-tag.is-none {
+  background: #eceff1;
+  border-color: #cfd8dc;
+  color: #90a4ae;
+}
+
+.admin-root .history-empty-note {
+  margin: 0;
+  color: #78909c;
+  font-size: 0.9rem;
 }
 
 /* ---------- Responsivo ---------- */
