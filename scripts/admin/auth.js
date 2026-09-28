@@ -8,6 +8,8 @@ function renderAuthView(user) {
   $('login-view').classList.toggle('hidden', logged);
   $('admin-view').classList.toggle('hidden', !logged);
   $('auth-actions').classList.toggle('hidden', !logged);
+  // As abas só fazem sentido sobre o painel autenticado.
+  $('admin-nav').classList.toggle('hidden', !logged);
   if (user) {
     $('user-email').textContent = user.email;
   }
