@@ -50,19 +50,50 @@ function canUseJoker(jokersUsed, name) {
   return !jokersUsed[name];
 }
 
+// Monta o descritor do round da rodada (histórico de jogo). Puro.
+// `decisive` marca o round que encerra a partida: a resposta errada (derrota)
+// ou a última pergunta (vitória). As alternativas viajam inteiras porque o
+// "print" da tela final é derivado deste snapshot.
+function buildRound({ question, order, chosenIndex = null, chosenText = null, chosenCorrect = null, skipped = false, decisive = false }) {
+  return {
+    order,
+    question: question.question,
+    points: question.points,
+    options: question.options.map(option => ({
+      text: option.text,
+      correct: !!option.correct
+    })),
+    chosenIndex,
+    chosenText,
+    chosenCorrect,
+    skipped,
+    decisive
+  };
+}
+
 /**
  * Avalia a resposta (certa/errada). Puro.
  * @param {object} state - snapshot via getStateSnapshot()
- * @param {object} input - { isCorrect, question, isLastQuestion }
- * @returns {{ stateChanges: object, effects: array }}
+ * @param {object} input - { isCorrect, question, isLastQuestion, chosenIndex, chosenText }
+ * @returns {{ stateChanges: object, effects: array, round: object }}
  */
-function gradeAnswer(state, { isCorrect, question, isLastQuestion }) {
+function gradeAnswer(state, { isCorrect, question, isLastQuestion, chosenIndex, chosenText }) {
   const questionNumber = state.currentQuestion + 1;
   const stateChanges = { markAnswered: true };
   const effects = [
     { type: 'disable-options', questionNumber },
     { type: 'disable-jokers', questionNumber }
   ];
+
+  const round = buildRound({
+    question,
+    order: questionNumber,
+    chosenIndex,
+    chosenText,
+    chosenCorrect: isCorrect,
+    skipped: false,
+    decisive: !isCorrect || isLastQuestion
+  });
 
   if (isCorrect) {
     stateChanges.score = question.points;
@@ -86,7 +117,7 @@ function gradeAnswer(state, { isCorrect, question, isLastQuestion }) {
     );
   }
 
-  return { stateChanges, effects };
+  return { stateChanges, effects, round };
 }
 
 /**
@@ -94,7 +125,7 @@ function gradeAnswer(state, { isCorrect, question, isLastQuestion }) {
  * O som toca sempre (aceito ou não), como no fluxo legado.
  * @param {object} state - snapshot
  * @param {object} input - { question, questionNumber } (questionNumber 1-based)
- * @returns {{ accepted: boolean, stateChanges: object, effects: array }}
+ * @returns {{ accepted: boolean, stateChanges: object, effects: array, round: object|null }}
  */
 function gradeSkip(state, { question, questionNumber }) {
   const effects = [{ type: 'sound', id: 'pulo-audio' }];
@@ -102,14 +133,23 @@ function gradeSkip(state, { question, questionNumber }) {
 
   if (!accepted) {
     effects.push({ type: 'modal', html: JOKER_MODAL_HTML.pulosUsed, mode: 'ajuda' });
-    return { accepted: false, stateChanges: {}, effects };
+    return { accepted: false, stateChanges: {}, effects, round: null };
   }
 
   const stateChanges = { useJoker: 'pulos' };
+  // Só há round novo quando a pergunta ainda não foi respondida — se já
+  // estava bloqueada, o round existe e o pulo apenas leva ao próximo degrau.
+  let round = null;
   if (!state.respostaBloqueada) {
     stateChanges.score = question.points;
     stateChanges.markAnswered = true;
     effects.push({ type: 'disable-options', questionNumber });
+    round = buildRound({
+      question,
+      order: questionNumber,
+      skipped: true,
+      decisive: false
+    });
   }
 
   effects.push({
@@ -119,7 +159,7 @@ function gradeSkip(state, { question, questionNumber }) {
     onModalClose: { kind: 'show-points', questionNumber: questionNumber + 1 }
   });
 
-  return { accepted: true, stateChanges, effects };
+  return { accepted: true, stateChanges, effects, round };
 }
 
 /**
