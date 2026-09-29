@@ -8,17 +8,19 @@ Diretrizes de trabalho para colaboradores humanos e agentes de IA neste reposit�
 
 - `index.html` — jogo (tela inicial, regras, modal "Escolher Questionários" carregado do Firestore).
 - `admin.html` — painel administrativo (SPA com roteamento por hash): login, CRUD de questionários e perguntas.
-- `scripts/firebaseService.js` — camada de acesso a dados (toda a CRUD com Firestore).
+- `scripts/shared/firebaseService.js` — camada de acesso a dados (toda a CRUD com Firestore).
 - `scripts/admin/*` — módulos do painel (listagem, formulários de questionário/pergunta, visualização).
-- `scripts/adminApp.js` — bootstrap e roteamento do painel.
+- `scripts/admin/adminApp.js` — bootstrap e roteamento do painel.
 - `firestore.rules` — leitura pública; escrita restrita à allowlist de e-mails admin.
 - Modelo NoSQL: coleção `questionnaires` com subcoleção `questions` (cada pergunta é um documento próprio, permitindo cadastro incremental). Campo denormalizado `questions_count`.
-- `QUESTIONS_TARGET = 15` (`scripts/gameRules.js`, fonte única com `POINTS_LADDER`/`LEVEL_BOUNDS`) — todo questionário completo tem exatamente 15 perguntas; o modal do jogo só libera questionários 15/15.
+- `QUESTIONS_TARGET = 15` (`scripts/shared/gameRules.js`, fonte única com `POINTS_LADDER`/`LEVEL_BOUNDS`) — todo questionário completo tem exatamente 15 perguntas; o modal do jogo só libera questionários 15/15.
 
 ### Scripts npm
 
 - `npm start` — servidor local (`npx serve .`).
 - `npm seed` — importa as perguntas legadas (`perguntas/*.js`) para o Firestore.
+- `npm run deploy:rules` — publica `firestore.rules` no projeto Firebase (requer `firebase login` prévio).
+- `npm run test:rules` — roda os testes das Security Rules no emulador local (requer Java 17+).
 - **Não existe script de build e não há pasta `dist/`** — o projeto é implantado direto da raiz. Não recriar sem pedido explícito.
 
 ## Comunicação e idioma
@@ -57,4 +59,4 @@ Modelo: <id completo do modelo, ex.: opencode/mimo-v2.6>
 - Comentários no código em pt-BR.
 - Validar sintaxe após alterar JS: `node --check <arquivo>` em todos os arquivos tocados.
 - Regra de domínio: questionário só é considerado completo e jogável com 15 perguntas — preservar essa validação no admin e no modal do jogo.
-- Não introduzir dependências novas sem autorização (hoje: apenas `firebase-admin` para o seed).
+- Não introduzir dependências novas sem autorização (hoje: `firebase-admin` para o seed; `firebase-tools` e `@firebase/rules-unit-testing` para deploy e testes de regras).
