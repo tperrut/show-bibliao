@@ -2,8 +2,8 @@
 // UTILITÁRIOS COMPARTILHADOS DO PAINEL
 // ===============================
 // Constantes de regra (QUESTIONS_TARGET, POINTS_LADDER, pointsForOrder)
-// vêm de scripts/gameRules.js — fonte única carregada antes deste arquivo.
-// escapeHtml vive em scripts/escapeHtml.js (compartilhado com o jogo).
+// vêm de scripts/shared/gameRules.js — fonte única carregada antes deste arquivo.
+// escapeHtml vive em scripts/shared/escapeHtml.js (compartilhado com o jogo).
 
 const $ = (id) => document.getElementById(id);
 
