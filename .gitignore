@@ -6,3 +6,4 @@ ui-debug.log
 .firebase/
 openspec/
 *.mp4
+test-results/.last-run.json
