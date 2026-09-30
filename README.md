@@ -324,6 +324,6 @@ MIT License — sinta-se livre para usar, modificar e distribuir.
 
 **Feito com ❤️ para a comunidade**
 
-[🌐 Jogar Agora](https://show-bibliao-imw.netlify.app/) · [🐛 Reportar Bug](https://github.com/seu-usuario/show-biblao/issues) · [💡 Sugerir Melhoria](https://github.com/seu-usuario/show-biblao/issues)
+[🌐 Jogar Agora](https://show-bibliao-imw.netlify.app/) · [🐛 Reportar Bug](https://github.com/tperrut/show-biblao/issues) · [💡 Sugerir Melhoria](https://github.com/tperrut/show-biblao/issues)
 
 </div>
