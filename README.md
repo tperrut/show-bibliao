@@ -183,6 +183,29 @@ npm run test:rules
 | `npm run seed` | Importa perguntas legadas para o Firestore |
 | `npm run deploy:rules` | Publica `firestore.rules` no projeto Firebase |
 | `npm run test:rules` | Roda testes das Security Rules no emulador |
+| `npm run screenshots` | Gera screenshots para documentação (Playwright) |
+
+---
+
+## 📸 Screenshots
+
+### Jogo (index.html)
+| Tela Inicial | Regras | Escolher Questionários |
+|--------------|--------|------------------------|
+| ![Welcome Desktop](docs/screenshots/01-welcome-desktop.png) | ![Rules Modal](docs/screenshots/02-rules-modal-desktop.png) | ![Questionnaires Modal](docs/screenshots/03-questionnaires-modal-desktop.png) |
+
+*Disponíveis também em [tablet](docs/screenshots/01-welcome-tablet.png) e [mobile](docs/screenshots/01-welcome-mobile.png)*
+
+### Painel Admin (admin.html)
+| Login | Lista de Questionários | Formulário Questionário |
+|-------|------------------------|-------------------------|
+| ![Admin Login](docs/screenshots/admin-01-login-desktop.png) | ![Admin Questionários](docs/screenshots/admin-02-questionnaires-list-desktop.png) | ![Admin Form](docs/screenshots/admin-03-questionnaire-form-desktop.png) |
+
+| Formulário Pergunta | Visualizar Questionário | Histórico |
+|---------------------|------------------------|-----------|
+| ![Admin Question Form](docs/screenshots/admin-04-question-form-desktop.png) | ![Admin Detail](docs/screenshots/admin-05-questionnaire-detail-desktop.png) | ![Admin History](docs/screenshots/admin-06-game-history-desktop.png) |
+
+> **Gerar screenshots atualizados:** `npm run screenshots` (requer servidor local rodando em `npm start`)
 
 ---
 
