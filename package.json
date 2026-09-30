@@ -9,13 +9,20 @@
     "backfill:year": "node tools/backfillYear.js",
     "start": "npx serve . --config serve.json",
     "deploy:rules": "firebase deploy --only firestore:rules",
-    "test:rules": "firebase emulators:exec --only firestore --project demo-show-biblao \"node --test\""
+    "test:rules": "firebase emulators:exec --only firestore --project demo-show-biblao \"node --test\"",
+    "screenshots": "npx playwright test tests/screenshots/",
+    "screenshots:game": "npx playwright test tests/screenshots/game-flow.spec.js",
+    "screenshots:admin": "npx playwright test tests/screenshots/admin-flow.spec.js",
+    "screenshots:errors": "npx playwright test tests/screenshots/error-states.spec.js",
+    "screenshots:headed": "npx playwright test tests/screenshots/ --headed",
+    "screenshots:update": "npx playwright test tests/screenshots/ --update-snapshots"
   },
   "dependencies": {
     "firebase-admin": "^12.0.0"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^5.0.2",
+    "@playwright/test": "^1.63.0",
     "firebase-tools": "^14.27.0",
     "terser": "^5.16.0"
   }
